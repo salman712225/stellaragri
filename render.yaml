@@ -1,13 +1,16 @@
 services:
   - type: web
     name: stellar-agri-ai
-    env: python
+    runtime: python
+    plan: free
     buildCommand: pip install -r backend/requirements.txt
-    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: GEMINI_API_KEY
         sync: false
-      - key: GROQ_API_KEY
-        sync: false
+      - key: MISTRAL_API_KEY
+        value: ilLFGr5qVP7q4UpsU7iJnOV0pmd70oWz
+      - key: WEATHER_API_KEY
+        value: 59595d305ea74112b9c105207261907
