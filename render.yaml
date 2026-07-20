@@ -11,6 +11,8 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: MISTRAL_API_KEY
-        value: ilLFGr5qVP7q4UpsU7iJnOV0pmd70oWz
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
       - key: WEATHER_API_KEY
         value: 59595d305ea74112b9c105207261907
