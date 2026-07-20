@@ -1,0 +1,722 @@
+[
+    {
+        "question": "Which crop is suitable for rice?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "Recommend a crop for rice.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "Can I grow crops in rice?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "Suggest the best crop for rice.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "What crop grows well in rice?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "Which crop is suitable for wheat?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "wheat"
+    },
+    {
+        "question": "Recommend a crop for wheat.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "wheat"
+    },
+    {
+        "question": "Can I grow crops in wheat?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "wheat"
+    },
+    {
+        "question": "Suggest the best crop for wheat.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "wheat"
+    },
+    {
+        "question": "What crop grows well in wheat?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "wheat"
+    },
+    {
+        "question": "Which crop is suitable for maize?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "maize"
+    },
+    {
+        "question": "Recommend a crop for maize.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "maize"
+    },
+    {
+        "question": "Can I grow crops in maize?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "maize"
+    },
+    {
+        "question": "Suggest the best crop for maize.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "maize"
+    },
+    {
+        "question": "What crop grows well in maize?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "maize"
+    },
+    {
+        "question": "Which crop is suitable for cotton?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "Recommend a crop for cotton.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "Can I grow crops in cotton?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "Suggest the best crop for cotton.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "What crop grows well in cotton?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "Which crop is suitable for black soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "black soil"
+    },
+    {
+        "question": "Recommend a crop for black soil.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "black soil"
+    },
+    {
+        "question": "Can I grow crops in black soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "black soil"
+    },
+    {
+        "question": "Suggest the best crop for black soil.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "black soil"
+    },
+    {
+        "question": "What crop grows well in black soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "black soil"
+    },
+    {
+        "question": "Which crop is suitable for red soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "red soil"
+    },
+    {
+        "question": "Recommend a crop for red soil.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "red soil"
+    },
+    {
+        "question": "Can I grow crops in red soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "red soil"
+    },
+    {
+        "question": "Suggest the best crop for red soil.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "red soil"
+    },
+    {
+        "question": "What crop grows well in red soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "red soil"
+    },
+    {
+        "question": "Which crop is suitable for loamy soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "loamy soil"
+    },
+    {
+        "question": "Recommend a crop for loamy soil.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "loamy soil"
+    },
+    {
+        "question": "Can I grow crops in loamy soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "loamy soil"
+    },
+    {
+        "question": "Suggest the best crop for loamy soil.",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "loamy soil"
+    },
+    {
+        "question": "What crop grows well in loamy soil?",
+        "intent": "crop",
+        "expected_dataset": "crop",
+        "expected_keyword": "loamy soil"
+    },
+    {
+        "question": "Which fertilizer should I use for rice?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "Recommend fertilizer for rice.",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "Best fertilizer for rice?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "What nutrients are required for rice?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "How should I fertilize rice?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "rice"
+    },
+    {
+        "question": "Which fertilizer should I use for tomato?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "tomato"
+    },
+    {
+        "question": "Recommend fertilizer for tomato.",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "tomato"
+    },
+    {
+        "question": "Best fertilizer for tomato?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "tomato"
+    },
+    {
+        "question": "What nutrients are required for tomato?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "tomato"
+    },
+    {
+        "question": "How should I fertilize tomato?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "tomato"
+    },
+    {
+        "question": "Which fertilizer should I use for cotton?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "Recommend fertilizer for cotton.",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "Best fertilizer for cotton?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "What nutrients are required for cotton?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "How should I fertilize cotton?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "cotton"
+    },
+    {
+        "question": "Which fertilizer should I use for nitrogen deficiency?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "nitrogen deficiency"
+    },
+    {
+        "question": "Recommend fertilizer for nitrogen deficiency.",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "nitrogen deficiency"
+    },
+    {
+        "question": "Best fertilizer for nitrogen deficiency?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "nitrogen deficiency"
+    },
+    {
+        "question": "What nutrients are required for nitrogen deficiency?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "nitrogen deficiency"
+    },
+    {
+        "question": "How should I fertilize nitrogen deficiency?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "nitrogen deficiency"
+    },
+    {
+        "question": "Which fertilizer should I use for potassium deficiency?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "potassium deficiency"
+    },
+    {
+        "question": "Recommend fertilizer for potassium deficiency.",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "potassium deficiency"
+    },
+    {
+        "question": "Best fertilizer for potassium deficiency?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "potassium deficiency"
+    },
+    {
+        "question": "What nutrients are required for potassium deficiency?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "potassium deficiency"
+    },
+    {
+        "question": "How should I fertilize potassium deficiency?",
+        "intent": "fertilizer",
+        "expected_dataset": "fertilizer",
+        "expected_keyword": "potassium deficiency"
+    },
+    {
+        "question": "How do I treat leaf blast?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "leaf blast"
+    },
+    {
+        "question": "My crop has leaf blast. What should I do?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "leaf blast"
+    },
+    {
+        "question": "How can I control leaf blast?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "leaf blast"
+    },
+    {
+        "question": "Symptoms of leaf blast?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "leaf blast"
+    },
+    {
+        "question": "Treatment for leaf blast?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "leaf blast"
+    },
+    {
+        "question": "How do I treat powdery mildew?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "powdery mildew"
+    },
+    {
+        "question": "My crop has powdery mildew. What should I do?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "powdery mildew"
+    },
+    {
+        "question": "How can I control powdery mildew?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "powdery mildew"
+    },
+    {
+        "question": "Symptoms of powdery mildew?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "powdery mildew"
+    },
+    {
+        "question": "Treatment for powdery mildew?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "powdery mildew"
+    },
+    {
+        "question": "How do I treat yellow leaf curl?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "yellow leaf curl"
+    },
+    {
+        "question": "My crop has yellow leaf curl. What should I do?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "yellow leaf curl"
+    },
+    {
+        "question": "How can I control yellow leaf curl?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "yellow leaf curl"
+    },
+    {
+        "question": "Symptoms of yellow leaf curl?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "yellow leaf curl"
+    },
+    {
+        "question": "Treatment for yellow leaf curl?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "yellow leaf curl"
+    },
+    {
+        "question": "How do I treat bacterial blight?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "bacterial blight"
+    },
+    {
+        "question": "My crop has bacterial blight. What should I do?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "bacterial blight"
+    },
+    {
+        "question": "How can I control bacterial blight?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "bacterial blight"
+    },
+    {
+        "question": "Symptoms of bacterial blight?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "bacterial blight"
+    },
+    {
+        "question": "Treatment for bacterial blight?",
+        "intent": "disease",
+        "expected_dataset": "disease",
+        "expected_keyword": "bacterial blight"
+    },
+    {
+        "question": "How do I control aphid?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "aphid"
+    },
+    {
+        "question": "Best pesticide for aphid?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "aphid"
+    },
+    {
+        "question": "How can I remove aphid?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "aphid"
+    },
+    {
+        "question": "Treatment for aphid infestation?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "aphid"
+    },
+    {
+        "question": "Organic control of aphid?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "aphid"
+    },
+    {
+        "question": "How do I control whitefly?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "whitefly"
+    },
+    {
+        "question": "Best pesticide for whitefly?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "whitefly"
+    },
+    {
+        "question": "How can I remove whitefly?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "whitefly"
+    },
+    {
+        "question": "Treatment for whitefly infestation?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "whitefly"
+    },
+    {
+        "question": "Organic control of whitefly?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "whitefly"
+    },
+    {
+        "question": "How do I control armyworm?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "armyworm"
+    },
+    {
+        "question": "Best pesticide for armyworm?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "armyworm"
+    },
+    {
+        "question": "How can I remove armyworm?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "armyworm"
+    },
+    {
+        "question": "Treatment for armyworm infestation?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "armyworm"
+    },
+    {
+        "question": "Organic control of armyworm?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "armyworm"
+    },
+    {
+        "question": "How do I control thrips?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "thrips"
+    },
+    {
+        "question": "Best pesticide for thrips?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "thrips"
+    },
+    {
+        "question": "How can I remove thrips?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "thrips"
+    },
+    {
+        "question": "Treatment for thrips infestation?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "thrips"
+    },
+    {
+        "question": "Organic control of thrips?",
+        "intent": "pest",
+        "expected_dataset": "pest",
+        "expected_keyword": "thrips"
+    },
+    {
+        "question": "How should I manage irrigation?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "irrigation"
+    },
+    {
+        "question": "Best practices for irrigation?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "irrigation"
+    },
+    {
+        "question": "Explain irrigation.",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "irrigation"
+    },
+    {
+        "question": "Give management tips for irrigation.",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "irrigation"
+    },
+    {
+        "question": "How do farmers perform irrigation?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "irrigation"
+    },
+    {
+        "question": "How should I manage weed management?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "weed management"
+    },
+    {
+        "question": "Best practices for weed management?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "weed management"
+    },
+    {
+        "question": "Explain weed management.",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "weed management"
+    },
+    {
+        "question": "Give management tips for weed management.",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "weed management"
+    },
+    {
+        "question": "How do farmers perform weed management?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "weed management"
+    },
+    {
+        "question": "How should I manage harvesting?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "harvesting"
+    },
+    {
+        "question": "Best practices for harvesting?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "harvesting"
+    },
+    {
+        "question": "Explain harvesting.",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "harvesting"
+    },
+    {
+        "question": "Give management tips for harvesting.",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "harvesting"
+    },
+    {
+        "question": "How do farmers perform harvesting?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "harvesting"
+    },
+    {
+        "question": "How should I manage crop rotation?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "crop rotation"
+    },
+    {
+        "question": "Best practices for crop rotation?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "crop rotation"
+    },
+    {
+        "question": "Explain crop rotation.",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "crop rotation"
+    },
+    {
+        "question": "Give management tips for crop rotation.",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "crop rotation"
+    },
+    {
+        "question": "How do farmers perform crop rotation?",
+        "intent": "management",
+        "expected_dataset": "management",
+        "expected_keyword": "crop rotation"
+    }
+]

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stellar Agri AI - Smart Agricultural Advisory System for Farmers">
+    <title>Stellar Agri AI | Smart Farming Advisory</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="frontend/css/style.css">
+    <link rel="stylesheet" href="frontend/css/responsive.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Navigation Header -->
+        <header class="app-header">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Stellar Agri AI</h1>
+                    <span class="tagline">Smart Agricultural Advisory Platform</span>
+                </div>
+            </div>
+            
+            <div class="header-status">
+                <span class="status-indicator online"></span>
+                <span class="status-text">Backend Connected</span>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Welcome Header -->
+            <section class="banner-card">
+                <div class="banner-badge">🌾 Intelligent Agronomy</div>
+                <h2>Ask Your Agricultural Query</h2>
+                <p>Get precise crop recommendations, fertilizer advice, pest control, live weather insights, and market price analysis powered by AI.</p>
+                
+                <!-- Quick Prompts -->
+                <div class="quick-prompts">
+                    <span class="prompt-title">Try asking:</span>
+                    <button class="chip" data-prompt="Which fertilizer should I use for rice?">
+                        🧪 Rice Fertilizer
+                    </button>
+                    <button class="chip" data-prompt="Recommend crops for clayey soil with high NPK">
+                        🌾 Crop Recommendation
+                    </button>
+                    <button class="chip" data-prompt="Live weather forecast for Tamil Nadu">
+                        🌧️ Tamil Nadu Weather
+                    </button>
+                    <button class="chip" data-prompt="Pest control for tomato leaf spot">
+                        🐛 Tomato Pest Control
+                    </button>
+                </div>
+            </section>
+
+            <!-- Search / Input Section -->
+            <section class="input-section">
+                <form id="chat-form" class="chat-form">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input 
+                            type="text" 
+                            id="user-input" 
+                            placeholder="Type your question here (e.g. 'What fertilizer for rice in clayey soil?')..." 
+                            required
+                            autocomplete="off"
+                        >
+                        <button type="submit" id="send-btn" class="send-btn">
+                            <span>Get Advice</span>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Loading Spinner -->
+            <div id="loader" class="loader-container hidden">
+                <div class="spinner"></div>
+                <p>Analyzing knowledge base, live weather, and market data...</p>
+            </div>
+
+            <!-- Response Results Area -->
+            <section id="results-area" class="results-area hidden">
+                <div class="results-header">
+                    <h3>Advisory Analysis</h3>
+                    <div class="intent-badge-container">
+                        <span id="intent-badge" class="intent-badge">Intent: General</span>
+                        <span id="confidence-badge" class="confidence-badge">Confidence: 100%</span>
+                    </div>
+                </div>
+
+                <!-- Executive Summary -->
+                <div id="summary-card" class="summary-card">
+                    <div class="card-icon summary-icon">💡</div>
+                    <div class="summary-text">
+                        <h4>Executive Summary</h4>
+                        <p id="summary-content">No summary generated.</p>
+                    </div>
+                </div>
+
+                <!-- Key Answers List -->
+                <div id="answers-container" class="answers-container">
+                    <h4><span class="bullet-icon">📌</span> Key Recommendations</h4>
+                    <ul id="answers-list" class="answers-list"></ul>
+                </div>
+
+                <!-- Structured Cards Grid -->
+                <div class="cards-grid">
+                    <!-- Crop Recommendation -->
+                    <div id="card-crop" class="info-card hidden">
+                        <div class="card-header">
+                            <div class="card-title-icon">🌾</div>
+                            <h4>Crop Recommendation</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="stat-highlight">
+                                <span class="label">Recommended Crop</span>
+                                <span id="crop-name" class="val highlight-green">--</span>
+                            </div>
+                            <p id="crop-reason" class="card-desc">No specific crop data.</p>
+                        </div>
+                    </div>
+
+                    <!-- Fertilizer Advice -->
+                    <div id="card-fertilizer" class="info-card hidden">
+                        <div class="card-header">
+                            <div class="card-title-icon">🧪</div>
+                            <h4>Fertilizer Advice</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="items-list-group">
+                                <span class="label">Recommended Fertilizers</span>
+                                <div id="fertilizer-pills" class="pills-flex"></div>
+                            </div>
+                            <p id="fertilizer-application" class="card-desc">No application notes.</p>
+                        </div>
+                    </div>
+
+                    <!-- Disease Analysis -->
+                    <div id="card-disease" class="info-card hidden">
+                        <div class="card-header">
+                            <div class="card-title-icon">🛡️</div>
+                            <h4>Disease Analysis</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="stat-highlight">
+                                <span class="label">Detected Disease</span>
+                                <span id="disease-name" class="val highlight-red">--</span>
+                            </div>
+                            <p id="disease-symptoms" class="card-sub"></p>
+                            <p id="disease-recommendation" class="card-desc"></p>
+                        </div>
+                    </div>
+
+                    <!-- Pest Analysis -->
+                    <div id="card-pest" class="info-card hidden">
+                        <div class="card-header">
+                            <div class="card-title-icon">🐛</div>
+                            <h4>Pest Control</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="stat-highlight">
+                                <span class="label">Identified Pest</span>
+                                <span id="pest-name" class="val highlight-orange">--</span>
+                            </div>
+                            <p id="pest-recommendation" class="card-desc"></p>
+                        </div>
+                    </div>
+
+                    <!-- Weather Analysis -->
+                    <div id="card-weather" class="info-card hidden">
+                        <div class="card-header">
+                            <div class="card-title-icon">🌧️</div>
+                            <h4>Weather Insights</h4>
+                        </div>
+                        <div class="card-body">
+                            <p id="weather-impact" class="card-desc"></p>
+                            <p id="weather-recommendation" class="card-note"></p>
+                        </div>
+                    </div>
+
+                    <!-- Market Analysis -->
+                    <div id="card-market" class="info-card hidden">
+                        <div class="card-header">
+                            <div class="card-title-icon">📈</div>
+                            <h4>Market Price Analysis</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="stat-highlight">
+                                <span class="label">Current Price</span>
+                                <span id="market-price" class="val highlight-gold">--</span>
+                            </div>
+                            <p id="market-recommendation" class="card-desc"></p>
+                        </div>
+                    </div>
+
+                    <!-- Irrigation Advice -->
+                    <div id="card-irrigation" class="info-card hidden">
+                        <div class="card-header">
+                            <div class="card-title-icon">💧</div>
+                            <h4>Irrigation Advice</h4>
+                        </div>
+                        <div class="card-body">
+                            <p id="irrigation-schedule" class="card-desc"></p>
+                            <p id="irrigation-recommendation" class="card-note"></p>
+                        </div>
+                    </div>
+
+                    <!-- Crop Management -->
+                    <div id="card-management" class="info-card hidden">
+                        <div class="card-header">
+                            <div class="card-title-icon">🌱</div>
+                            <h4>Crop Management</h4>
+                        </div>
+                        <div class="card-body">
+                            <p id="management-stage" class="card-desc"></p>
+                            <p id="management-recommendation" class="card-note"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warnings & Next Steps -->
+                <div class="action-footer">
+                    <div id="warnings-box" class="warnings-box hidden">
+                        <div class="box-title">⚠️ Warnings & Risks</div>
+                        <ul id="warnings-list"></ul>
+                    </div>
+
+                    <div id="nextsteps-box" class="nextsteps-box hidden">
+                        <div class="box-title">✅ Next Recommended Steps</div>
+                        <ul id="nextsteps-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Raw JSON Toggle -->
+                <div class="json-toggle-container">
+                    <button id="toggle-json-btn" class="toggle-btn">
+                        <span>Show Raw JSON Output</span>
+                    </button>
+                    <pre id="json-preview" class="json-preview hidden"></pre>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 Stellar Agri AI. Powered by RAG, Gemini & Groq Agricultural Intelligence.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="frontend/js/config.js"></script>
+    <script src="frontend/js/api.js"></script>
+    <script src="frontend/js/ui.js"></script>
+    <script src="frontend/js/app.js"></script>
+</body>
+</html>

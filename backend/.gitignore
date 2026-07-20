@@ -1,0 +1,11 @@
+.env
+
+__pycache__/
+
+uploads/
+
+storage/
+
+*.pyc
+
+*.pkl
