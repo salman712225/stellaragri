@@ -8,14 +8,19 @@ class ChunkStore:
     STORAGE_FILE = "chunks.json"
 
     @classmethod
+    def _get_path(cls):
+        path = os.path.join(cls.STORAGE_DIR, cls.STORAGE_FILE)
+        if not os.path.exists(path):
+            alt = os.path.join("backend", cls.STORAGE_DIR, cls.STORAGE_FILE)
+            if os.path.exists(alt):
+                return alt
+        return path
+
+    @classmethod
     def save(cls, chunks):
 
-        os.makedirs(cls.STORAGE_DIR, exist_ok=True)
-
-        path = os.path.join(
-            cls.STORAGE_DIR,
-            cls.STORAGE_FILE
-        )
+        path = cls._get_path()
+        os.makedirs(os.path.dirname(path), exist_ok=True)
 
         with open(path, "w", encoding="utf-8") as f:
 
@@ -29,10 +34,7 @@ class ChunkStore:
     @classmethod
     def load(cls):
 
-        path = os.path.join(
-            cls.STORAGE_DIR,
-            cls.STORAGE_FILE
-        )
+        path = cls._get_path()
 
         if not os.path.exists(path):
             return []

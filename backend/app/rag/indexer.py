@@ -6,8 +6,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from app.rag.chunker import Chunker
 
 
-VECTORIZER_FILE = "storage/tfidf_vectorizer.pkl"
-MATRIX_FILE = "storage/tfidf_matrix.pkl"
+def _get_storage_path(filename: str):
+    if os.path.exists(os.path.join("storage", filename)):
+        return os.path.join("storage", filename)
+    if os.path.exists(os.path.join("backend", "storage", filename)):
+        return os.path.join("backend", "storage", filename)
+    return os.path.join("storage", filename)
 
 
 class Indexer:
@@ -40,7 +44,11 @@ class Indexer:
         all_chunks = []
 
         if not os.path.exists(upload_folder):
-            return all_chunks
+            backend_upload = os.path.join("backend", upload_folder)
+            if os.path.exists(backend_upload):
+                upload_folder = backend_upload
+            else:
+                return all_chunks
 
         for filename in sorted(os.listdir(upload_folder)):
 
@@ -95,16 +103,19 @@ class Indexer:
 
         matrix = vectorizer.fit_transform(texts)
 
-        os.makedirs("storage", exist_ok=True)
+        vectorizer_file = _get_storage_path("tfidf_vectorizer.pkl")
+        matrix_file = _get_storage_path("tfidf_matrix.pkl")
+
+        os.makedirs(os.path.dirname(vectorizer_file), exist_ok=True)
 
         joblib.dump(
             vectorizer,
-            VECTORIZER_FILE,
+            vectorizer_file,
         )
 
         joblib.dump(
             matrix,
-            MATRIX_FILE,
+            matrix_file,
         )
 
         print(f"Vocabulary Size : {len(vectorizer.vocabulary_)}")
