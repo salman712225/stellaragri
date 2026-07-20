@@ -1,0 +1,301 @@
+management_id,crop,growth_stage,activity,recommendation,frequency,priority,description
+1,Maize,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Weekly,High,Land Preparation management practices for Maize.
+2,Wheat,Grain Filling,Grain Filling,Maintain moisture until maturity.,As recommended,High,Grain Filling management practices for Wheat.
+3,Soybean,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,Low,Vegetative management practices for Soybean.
+4,Cotton,Square Formation,Square Formation,Monitor bollworms and nutrient status.,Weekly,Low,Square Formation management practices for Cotton.
+5,Banana,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,Low,Vegetative management practices for Banana.
+6,Potato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Weekly,High,Vegetative management practices for Potato.
+7,Chilli,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,High,Vegetative management practices for Chilli.
+8,Onion,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Once,High,Transplanting management practices for Onion.
+9,Cotton,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Once,High,Vegetative management practices for Cotton.
+10,Chilli,Fruiting,Fruiting,Support plants and monitor diseases.,As recommended,Medium,Fruiting management practices for Chilli.
+11,Chilli,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Weekly,Low,Vegetative management practices for Chilli.
+12,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Critical growth stage,High,Nursery management practices for Chilli.
+13,Soybean,Pod Filling,Pod Filling,Avoid water stress.,Once,High,Pod Filling management practices for Soybean.
+14,Chilli,Flowering,Flowering,Avoid moisture stress and monitor pests.,Weekly,Medium,Flowering management practices for Chilli.
+15,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,High,Land Preparation management practices for Tomato.
+16,Wheat,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,Low,Land Preparation management practices for Wheat.
+17,Soybean,Sowing,Sowing,Use certified seeds at recommended spacing.,Weekly,High,Sowing management practices for Soybean.
+18,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Once,Medium,Harvest management practices for Wheat.
+19,Banana,Planting,Planting,Maintain recommended spacing.,Weekly,High,Planting management practices for Banana.
+20,Rice,Flowering,Flowering,Avoid moisture stress and monitor pests.,Critical growth stage,Low,Flowering management practices for Rice.
+21,Tomato,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Once,Low,Transplanting management practices for Tomato.
+22,Chilli,Flowering,Flowering,Avoid moisture stress and monitor pests.,Every 15 days,High,Flowering management practices for Chilli.
+23,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,High,Harvest management practices for Wheat.
+24,Rice,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,Medium,Vegetative management practices for Rice.
+25,Rice,Tillering,Tillering,Top dress nitrogen as recommended.,Weekly,Medium,Tillering management practices for Rice.
+26,Cotton,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,Medium,Flowering management practices for Cotton.
+27,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,Medium,Harvest management practices for Wheat.
+28,Maize,Sowing,Sowing,Use certified seeds at recommended spacing.,Weekly,Medium,Sowing management practices for Maize.
+29,Onion,Bulb Formation,Bulb Formation,Reduce excess irrigation.,Critical growth stage,High,Bulb Formation management practices for Onion.
+30,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Weekly,Medium,Harvest management practices for Wheat.
+31,Maize,Tasseling,Tasseling,Ensure adequate irrigation.,As recommended,Medium,Tasseling management practices for Maize.
+32,Maize,Tasseling,Tasseling,Ensure adequate irrigation.,Critical growth stage,High,Tasseling management practices for Maize.
+33,Rice,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,Low,Harvest management practices for Rice.
+34,Onion,Bulb Formation,Bulb Formation,Reduce excess irrigation.,Once,Medium,Bulb Formation management practices for Onion.
+35,Chilli,Flowering,Flowering,Avoid moisture stress and monitor pests.,Every 15 days,Medium,Flowering management practices for Chilli.
+36,Banana,Fruit Development,Fruit Development,Maintain balanced irrigation.,Every 15 days,High,Fruit Development management practices for Banana.
+37,Maize,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Once,High,Vegetative management practices for Maize.
+38,Wheat,Flowering,Flowering,Avoid moisture stress and monitor pests.,Weekly,High,Flowering management practices for Wheat.
+39,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Every 15 days,Medium,Nursery management practices for Chilli.
+40,Wheat,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Once,Low,Seed Treatment management practices for Wheat.
+41,Chilli,Fruiting,Fruiting,Support plants and monitor diseases.,Once,Medium,Fruiting management practices for Chilli.
+42,Banana,Harvest,Harvest,Harvest at physiological maturity.,Critical growth stage,Low,Harvest management practices for Banana.
+43,Onion,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Once,High,Nursery management practices for Onion.
+44,Maize,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,High,Land Preparation management practices for Maize.
+45,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,High,Land Preparation management practices for Tomato.
+46,Soybean,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Once,Low,Seed Treatment management practices for Soybean.
+47,Tomato,Fruiting,Fruiting,Support plants and monitor diseases.,Once,Medium,Fruiting management practices for Tomato.
+48,Banana,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,Low,Flowering management practices for Banana.
+49,Potato,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,Low,Harvest management practices for Potato.
+50,Cotton,Flowering,Flowering,Avoid moisture stress and monitor pests.,Critical growth stage,Medium,Flowering management practices for Cotton.
+51,Soybean,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,Medium,Flowering management practices for Soybean.
+52,Banana,Harvest,Harvest,Harvest at physiological maturity.,Critical growth stage,Medium,Harvest management practices for Banana.
+53,Maize,Harvest,Harvest,Harvest at physiological maturity.,Weekly,High,Harvest management practices for Maize.
+54,Rice,Flowering,Flowering,Avoid moisture stress and monitor pests.,Weekly,Low,Flowering management practices for Rice.
+55,Onion,Bulb Formation,Bulb Formation,Reduce excess irrigation.,As recommended,Low,Bulb Formation management practices for Onion.
+56,Cotton,Flowering,Flowering,Avoid moisture stress and monitor pests.,Critical growth stage,High,Flowering management practices for Cotton.
+57,Onion,Bulb Formation,Bulb Formation,Reduce excess irrigation.,Once,High,Bulb Formation management practices for Onion.
+58,Maize,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,High,Land Preparation management practices for Maize.
+59,Rice,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,High,Vegetative management practices for Rice.
+60,Onion,Harvest,Harvest,Harvest at physiological maturity.,Critical growth stage,Medium,Harvest management practices for Onion.
+61,Onion,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Critical growth stage,High,Transplanting management practices for Onion.
+62,Tomato,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,Medium,Flowering management practices for Tomato.
+63,Soybean,Flowering,Flowering,Avoid moisture stress and monitor pests.,Critical growth stage,High,Flowering management practices for Soybean.
+64,Onion,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Every 15 days,High,Nursery management practices for Onion.
+65,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,High,Land Preparation management practices for Tomato.
+66,Chilli,Fruiting,Fruiting,Support plants and monitor diseases.,Every 15 days,Medium,Fruiting management practices for Chilli.
+67,Rice,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Once,Low,Seed Treatment management practices for Rice.
+68,Soybean,Flowering,Flowering,Avoid moisture stress and monitor pests.,Every 15 days,Low,Flowering management practices for Soybean.
+69,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,As recommended,Medium,Land Preparation management practices for Tomato.
+70,Soybean,Pod Filling,Pod Filling,Avoid water stress.,As recommended,Medium,Pod Filling management practices for Soybean.
+71,Cotton,Sowing,Sowing,Use certified seeds at recommended spacing.,Once,Low,Sowing management practices for Cotton.
+72,Wheat,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Every 15 days,High,Seed Treatment management practices for Wheat.
+73,Tomato,Harvest,Harvest,Harvest at physiological maturity.,As recommended,High,Harvest management practices for Tomato.
+74,Cotton,Sowing,Sowing,Use certified seeds at recommended spacing.,Weekly,Medium,Sowing management practices for Cotton.
+75,Onion,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Weekly,High,Nursery management practices for Onion.
+76,Cotton,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,Low,Land Preparation management practices for Cotton.
+77,Chilli,Harvest,Harvest,Harvest at physiological maturity.,Once,Medium,Harvest management practices for Chilli.
+78,Cotton,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,High,Vegetative management practices for Cotton.
+79,Banana,Planting,Planting,Maintain recommended spacing.,Every 15 days,Medium,Planting management practices for Banana.
+80,Tomato,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Once,Low,Nursery management practices for Tomato.
+81,Rice,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Once,Medium,Transplanting management practices for Rice.
+82,Rice,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,As recommended,Low,Nursery management practices for Rice.
+83,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,As recommended,Medium,Nursery management practices for Chilli.
+84,Rice,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Every 15 days,High,Seed Treatment management practices for Rice.
+85,Onion,Harvest,Harvest,Harvest at physiological maturity.,Once,Low,Harvest management practices for Onion.
+86,Maize,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,As recommended,High,Vegetative management practices for Maize.
+87,Potato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,As recommended,Medium,Vegetative management practices for Potato.
+88,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Critical growth stage,Medium,Harvest management practices for Wheat.
+89,Banana,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,High,Land Preparation management practices for Banana.
+90,Tomato,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Weekly,Low,Nursery management practices for Tomato.
+91,Rice,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,Medium,Vegetative management practices for Rice.
+92,Wheat,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Once,Low,Seed Treatment management practices for Wheat.
+93,Cotton,Square Formation,Square Formation,Monitor bollworms and nutrient status.,As recommended,Medium,Square Formation management practices for Cotton.
+94,Banana,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Once,High,Vegetative management practices for Banana.
+95,Wheat,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,High,Land Preparation management practices for Wheat.
+96,Cotton,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,As recommended,High,Vegetative management practices for Cotton.
+97,Onion,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Every 15 days,Low,Transplanting management practices for Onion.
+98,Soybean,Pod Filling,Pod Filling,Avoid water stress.,Once,High,Pod Filling management practices for Soybean.
+99,Chilli,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Once,High,Transplanting management practices for Chilli.
+100,Tomato,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Every 15 days,Medium,Nursery management practices for Tomato.
+101,Chilli,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Weekly,High,Vegetative management practices for Chilli.
+102,Soybean,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Weekly,Low,Seed Treatment management practices for Soybean.
+103,Wheat,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,High,Vegetative management practices for Wheat.
+104,Onion,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Once,Medium,Nursery management practices for Onion.
+105,Rice,Tillering,Tillering,Top dress nitrogen as recommended.,As recommended,Medium,Tillering management practices for Rice.
+106,Cotton,Boll Development,Boll Development,Irrigate as required.,Critical growth stage,Low,Boll Development management practices for Cotton.
+107,Soybean,Sowing,Sowing,Use certified seeds at recommended spacing.,As recommended,High,Sowing management practices for Soybean.
+108,Potato,Seed Tuber Treatment,Seed Tuber Treatment,Treat seed tubers before planting.,As recommended,Medium,Seed Tuber Treatment management practices for Potato.
+109,Chilli,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Weekly,Medium,Transplanting management practices for Chilli.
+110,Chilli,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Every 15 days,Medium,Transplanting management practices for Chilli.
+111,Soybean,Sowing,Sowing,Use certified seeds at recommended spacing.,Every 15 days,High,Sowing management practices for Soybean.
+112,Onion,Bulb Formation,Bulb Formation,Reduce excess irrigation.,Weekly,Medium,Bulb Formation management practices for Onion.
+113,Tomato,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Weekly,Medium,Nursery management practices for Tomato.
+114,Cotton,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Every 15 days,High,Seed Treatment management practices for Cotton.
+115,Rice,Tillering,Tillering,Top dress nitrogen as recommended.,Weekly,Medium,Tillering management practices for Rice.
+116,Cotton,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Weekly,High,Land Preparation management practices for Cotton.
+117,Potato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,High,Vegetative management practices for Potato.
+118,Maize,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,As recommended,Low,Seed Treatment management practices for Maize.
+119,Rice,Harvest,Harvest,Harvest at physiological maturity.,Once,High,Harvest management practices for Rice.
+120,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,As recommended,Medium,Nursery management practices for Chilli.
+121,Wheat,Grain Filling,Grain Filling,Maintain moisture until maturity.,As recommended,Medium,Grain Filling management practices for Wheat.
+122,Wheat,Flowering,Flowering,Avoid moisture stress and monitor pests.,Every 15 days,High,Flowering management practices for Wheat.
+123,Wheat,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,High,Flowering management practices for Wheat.
+124,Maize,Tasseling,Tasseling,Ensure adequate irrigation.,Critical growth stage,High,Tasseling management practices for Maize.
+125,Rice,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,High,Land Preparation management practices for Rice.
+126,Maize,Harvest,Harvest,Harvest at physiological maturity.,Critical growth stage,High,Harvest management practices for Maize.
+127,Soybean,Pod Filling,Pod Filling,Avoid water stress.,Every 15 days,Medium,Pod Filling management practices for Soybean.
+128,Cotton,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,As recommended,Medium,Land Preparation management practices for Cotton.
+129,Tomato,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,Low,Harvest management practices for Tomato.
+130,Banana,Flowering,Flowering,Avoid moisture stress and monitor pests.,Critical growth stage,High,Flowering management practices for Banana.
+131,Wheat,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,High,Vegetative management practices for Wheat.
+132,Onion,Bulb Formation,Bulb Formation,Reduce excess irrigation.,Every 15 days,Low,Bulb Formation management practices for Onion.
+133,Tomato,Fruiting,Fruiting,Support plants and monitor diseases.,Every 15 days,Medium,Fruiting management practices for Tomato.
+134,Rice,Grain Filling,Grain Filling,Maintain moisture until maturity.,Critical growth stage,Low,Grain Filling management practices for Rice.
+135,Tomato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Weekly,Medium,Vegetative management practices for Tomato.
+136,Onion,Harvest,Harvest,Harvest at physiological maturity.,Weekly,Low,Harvest management practices for Onion.
+137,Chilli,Harvest,Harvest,Harvest at physiological maturity.,Weekly,Medium,Harvest management practices for Chilli.
+138,Banana,Harvest,Harvest,Harvest at physiological maturity.,Critical growth stage,Low,Harvest management practices for Banana.
+139,Banana,Flowering,Flowering,Avoid moisture stress and monitor pests.,As recommended,Low,Flowering management practices for Banana.
+140,Maize,Sowing,Sowing,Use certified seeds at recommended spacing.,As recommended,High,Sowing management practices for Maize.
+141,Cotton,Square Formation,Square Formation,Monitor bollworms and nutrient status.,Weekly,High,Square Formation management practices for Cotton.
+142,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,High,Harvest management practices for Wheat.
+143,Maize,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Critical growth stage,Medium,Seed Treatment management practices for Maize.
+144,Maize,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,As recommended,High,Seed Treatment management practices for Maize.
+145,Tomato,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Every 15 days,Low,Nursery management practices for Tomato.
+146,Tomato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,Low,Vegetative management practices for Tomato.
+147,Banana,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,As recommended,High,Land Preparation management practices for Banana.
+148,Tomato,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Critical growth stage,Medium,Transplanting management practices for Tomato.
+149,Soybean,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Critical growth stage,High,Land Preparation management practices for Soybean.
+150,Chilli,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,High,Vegetative management practices for Chilli.
+151,Maize,Harvest,Harvest,Harvest at physiological maturity.,As recommended,Medium,Harvest management practices for Maize.
+152,Banana,Fruit Development,Fruit Development,Maintain balanced irrigation.,Weekly,Medium,Fruit Development management practices for Banana.
+153,Rice,Tillering,Tillering,Top dress nitrogen as recommended.,Every 15 days,High,Tillering management practices for Rice.
+154,Tomato,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,High,Harvest management practices for Tomato.
+155,Potato,Planting,Planting,Maintain recommended spacing.,Every 15 days,Low,Planting management practices for Potato.
+156,Cotton,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,As recommended,Low,Vegetative management practices for Cotton.
+157,Banana,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,High,Land Preparation management practices for Banana.
+158,Maize,Tasseling,Tasseling,Ensure adequate irrigation.,Once,Medium,Tasseling management practices for Maize.
+159,Rice,Flowering,Flowering,Avoid moisture stress and monitor pests.,As recommended,Medium,Flowering management practices for Rice.
+160,Potato,Tuber Formation,Tuber Formation,Follow recommended agronomic practices.,Every 15 days,High,Tuber Formation management practices for Potato.
+161,Banana,Planting,Planting,Maintain recommended spacing.,Every 15 days,Low,Planting management practices for Banana.
+162,Soybean,Pod Filling,Pod Filling,Avoid water stress.,As recommended,Low,Pod Filling management practices for Soybean.
+163,Wheat,Grain Filling,Grain Filling,Maintain moisture until maturity.,Weekly,High,Grain Filling management practices for Wheat.
+164,Maize,Tasseling,Tasseling,Ensure adequate irrigation.,Critical growth stage,High,Tasseling management practices for Maize.
+165,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Critical growth stage,High,Nursery management practices for Chilli.
+166,Wheat,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,Low,Flowering management practices for Wheat.
+167,Tomato,Harvest,Harvest,Harvest at physiological maturity.,Weekly,Medium,Harvest management practices for Tomato.
+168,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,Medium,Land Preparation management practices for Tomato.
+169,Maize,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Once,High,Vegetative management practices for Maize.
+170,Wheat,Grain Filling,Grain Filling,Maintain moisture until maturity.,Once,Medium,Grain Filling management practices for Wheat.
+171,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Critical growth stage,High,Nursery management practices for Chilli.
+172,Rice,Grain Filling,Grain Filling,Maintain moisture until maturity.,Critical growth stage,Medium,Grain Filling management practices for Rice.
+173,Banana,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Once,Low,Vegetative management practices for Banana.
+174,Maize,Silking,Silking,Maintain soil moisture.,Once,Medium,Silking management practices for Maize.
+175,Cotton,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,As recommended,Low,Vegetative management practices for Cotton.
+176,Onion,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Every 15 days,Low,Transplanting management practices for Onion.
+177,Cotton,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,Low,Flowering management practices for Cotton.
+178,Rice,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,Low,Vegetative management practices for Rice.
+179,Banana,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Weekly,Low,Vegetative management practices for Banana.
+180,Wheat,Sowing,Sowing,Use certified seeds at recommended spacing.,Every 15 days,High,Sowing management practices for Wheat.
+181,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,High,Land Preparation management practices for Tomato.
+182,Onion,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Once,High,Nursery management practices for Onion.
+183,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Critical growth stage,High,Harvest management practices for Wheat.
+184,Cotton,Boll Development,Boll Development,Irrigate as required.,Once,High,Boll Development management practices for Cotton.
+185,Chilli,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,As recommended,Medium,Transplanting management practices for Chilli.
+186,Wheat,Sowing,Sowing,Use certified seeds at recommended spacing.,Once,High,Sowing management practices for Wheat.
+187,Potato,Tuber Formation,Tuber Formation,Follow recommended agronomic practices.,Once,High,Tuber Formation management practices for Potato.
+188,Maize,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,High,Land Preparation management practices for Maize.
+189,Tomato,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Weekly,Low,Transplanting management practices for Tomato.
+190,Maize,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,As recommended,Medium,Land Preparation management practices for Maize.
+191,Soybean,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,Medium,Vegetative management practices for Soybean.
+192,Cotton,Harvest,Harvest,Harvest at physiological maturity.,As recommended,High,Harvest management practices for Cotton.
+193,Cotton,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Every 15 days,Medium,Seed Treatment management practices for Cotton.
+194,Cotton,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Once,High,Seed Treatment management practices for Cotton.
+195,Banana,Flowering,Flowering,Avoid moisture stress and monitor pests.,Every 15 days,High,Flowering management practices for Banana.
+196,Wheat,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,As recommended,Medium,Seed Treatment management practices for Wheat.
+197,Chilli,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,High,Vegetative management practices for Chilli.
+198,Rice,Grain Filling,Grain Filling,Maintain moisture until maturity.,Weekly,Low,Grain Filling management practices for Rice.
+199,Soybean,Sowing,Sowing,Use certified seeds at recommended spacing.,As recommended,Low,Sowing management practices for Soybean.
+200,Cotton,Square Formation,Square Formation,Monitor bollworms and nutrient status.,Critical growth stage,Low,Square Formation management practices for Cotton.
+201,Cotton,Boll Development,Boll Development,Irrigate as required.,As recommended,High,Boll Development management practices for Cotton.
+202,Rice,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Every 15 days,High,Transplanting management practices for Rice.
+203,Potato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,Medium,Land Preparation management practices for Potato.
+204,Maize,Tasseling,Tasseling,Ensure adequate irrigation.,Once,High,Tasseling management practices for Maize.
+205,Soybean,Harvest,Harvest,Harvest at physiological maturity.,Once,Low,Harvest management practices for Soybean.
+206,Banana,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,Low,Vegetative management practices for Banana.
+207,Rice,Tillering,Tillering,Top dress nitrogen as recommended.,Critical growth stage,High,Tillering management practices for Rice.
+208,Banana,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Critical growth stage,Medium,Land Preparation management practices for Banana.
+209,Rice,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,High,Vegetative management practices for Rice.
+210,Rice,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Weekly,High,Seed Treatment management practices for Rice.
+211,Rice,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,As recommended,Medium,Vegetative management practices for Rice.
+212,Chilli,Flowering,Flowering,Avoid moisture stress and monitor pests.,Critical growth stage,Medium,Flowering management practices for Chilli.
+213,Cotton,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,As recommended,High,Land Preparation management practices for Cotton.
+214,Cotton,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,As recommended,High,Seed Treatment management practices for Cotton.
+215,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,Medium,Land Preparation management practices for Tomato.
+216,Wheat,Flowering,Flowering,Avoid moisture stress and monitor pests.,Weekly,Medium,Flowering management practices for Wheat.
+217,Maize,Sowing,Sowing,Use certified seeds at recommended spacing.,Once,High,Sowing management practices for Maize.
+218,Wheat,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,As recommended,Low,Seed Treatment management practices for Wheat.
+219,Wheat,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,High,Vegetative management practices for Wheat.
+220,Chilli,Fruiting,Fruiting,Support plants and monitor diseases.,Every 15 days,Medium,Fruiting management practices for Chilli.
+221,Soybean,Flowering,Flowering,Avoid moisture stress and monitor pests.,Weekly,Medium,Flowering management practices for Soybean.
+222,Rice,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,Low,Flowering management practices for Rice.
+223,Rice,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Critical growth stage,Low,Seed Treatment management practices for Rice.
+224,Maize,Sowing,Sowing,Use certified seeds at recommended spacing.,As recommended,Low,Sowing management practices for Maize.
+225,Maize,Sowing,Sowing,Use certified seeds at recommended spacing.,Once,High,Sowing management practices for Maize.
+226,Banana,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,Medium,Harvest management practices for Banana.
+227,Onion,Bulb Formation,Bulb Formation,Reduce excess irrigation.,Every 15 days,Low,Bulb Formation management practices for Onion.
+228,Wheat,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,Medium,Vegetative management practices for Wheat.
+229,Chilli,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,High,Vegetative management practices for Chilli.
+230,Onion,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,Medium,Harvest management practices for Onion.
+231,Soybean,Sowing,Sowing,Use certified seeds at recommended spacing.,Once,High,Sowing management practices for Soybean.
+232,Tomato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,As recommended,High,Vegetative management practices for Tomato.
+233,Tomato,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,As recommended,Medium,Transplanting management practices for Tomato.
+234,Wheat,Flowering,Flowering,Avoid moisture stress and monitor pests.,Every 15 days,Medium,Flowering management practices for Wheat.
+235,Rice,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Every 15 days,Low,Transplanting management practices for Rice.
+236,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,Low,Land Preparation management practices for Tomato.
+237,Rice,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Critical growth stage,Medium,Land Preparation management practices for Rice.
+238,Chilli,Harvest,Harvest,Harvest at physiological maturity.,As recommended,High,Harvest management practices for Chilli.
+239,Onion,Bulb Formation,Bulb Formation,Reduce excess irrigation.,Weekly,Medium,Bulb Formation management practices for Onion.
+240,Maize,Sowing,Sowing,Use certified seeds at recommended spacing.,Critical growth stage,Low,Sowing management practices for Maize.
+241,Maize,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,As recommended,Low,Land Preparation management practices for Maize.
+242,Potato,Tuber Formation,Tuber Formation,Follow recommended agronomic practices.,As recommended,Medium,Tuber Formation management practices for Potato.
+243,Maize,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Once,Medium,Land Preparation management practices for Maize.
+244,Rice,Harvest,Harvest,Harvest at physiological maturity.,Weekly,Low,Harvest management practices for Rice.
+245,Banana,Fruit Development,Fruit Development,Maintain balanced irrigation.,As recommended,Low,Fruit Development management practices for Banana.
+246,Wheat,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Weekly,Low,Land Preparation management practices for Wheat.
+247,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Once,High,Harvest management practices for Wheat.
+248,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Critical growth stage,High,Nursery management practices for Chilli.
+249,Banana,Planting,Planting,Maintain recommended spacing.,As recommended,High,Planting management practices for Banana.
+250,Rice,Tillering,Tillering,Top dress nitrogen as recommended.,Every 15 days,High,Tillering management practices for Rice.
+251,Potato,Tuber Formation,Tuber Formation,Follow recommended agronomic practices.,Every 15 days,Medium,Tuber Formation management practices for Potato.
+252,Wheat,Harvest,Harvest,Harvest at physiological maturity.,Critical growth stage,High,Harvest management practices for Wheat.
+253,Onion,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Critical growth stage,Low,Transplanting management practices for Onion.
+254,Soybean,Flowering,Flowering,Avoid moisture stress and monitor pests.,Weekly,Medium,Flowering management practices for Soybean.
+255,Maize,Tasseling,Tasseling,Ensure adequate irrigation.,Weekly,Low,Tasseling management practices for Maize.
+256,Cotton,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Critical growth stage,Low,Seed Treatment management practices for Cotton.
+257,Maize,Harvest,Harvest,Harvest at physiological maturity.,As recommended,Low,Harvest management practices for Maize.
+258,Wheat,Sowing,Sowing,Use certified seeds at recommended spacing.,Weekly,Medium,Sowing management practices for Wheat.
+259,Onion,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Once,Low,Transplanting management practices for Onion.
+260,Wheat,Grain Filling,Grain Filling,Maintain moisture until maturity.,Once,Low,Grain Filling management practices for Wheat.
+261,Chilli,Harvest,Harvest,Harvest at physiological maturity.,As recommended,Low,Harvest management practices for Chilli.
+262,Banana,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,As recommended,Low,Land Preparation management practices for Banana.
+263,Potato,Seed Tuber Treatment,Seed Tuber Treatment,Treat seed tubers before planting.,Every 15 days,Medium,Seed Tuber Treatment management practices for Potato.
+264,Tomato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Every 15 days,Medium,Vegetative management practices for Tomato.
+265,Banana,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,As recommended,Medium,Land Preparation management practices for Banana.
+266,Rice,Seed Treatment,Seed Treatment,Treat seed with recommended biofungicide or fungicide before sowing.,Once,Low,Seed Treatment management practices for Rice.
+267,Chilli,Harvest,Harvest,Harvest at physiological maturity.,Weekly,High,Harvest management practices for Chilli.
+268,Maize,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,High,Land Preparation management practices for Maize.
+269,Banana,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Weekly,Low,Vegetative management practices for Banana.
+270,Banana,Harvest,Harvest,Harvest at physiological maturity.,Every 15 days,Medium,Harvest management practices for Banana.
+271,Chilli,Harvest,Harvest,Harvest at physiological maturity.,Once,Low,Harvest management practices for Chilli.
+272,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,Every 15 days,Low,Nursery management practices for Chilli.
+273,Potato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,Medium,Land Preparation management practices for Potato.
+274,Tomato,Flowering,Flowering,Avoid moisture stress and monitor pests.,Weekly,Medium,Flowering management practices for Tomato.
+275,Soybean,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,Low,Land Preparation management practices for Soybean.
+276,Banana,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,Low,Land Preparation management practices for Banana.
+277,Wheat,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Every 15 days,High,Land Preparation management practices for Wheat.
+278,Tomato,Land Preparation,Land Preparation,Plough field and incorporate organic manure.,Critical growth stage,High,Land Preparation management practices for Tomato.
+279,Onion,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Critical growth stage,Medium,Transplanting management practices for Onion.
+280,Tomato,Harvest,Harvest,Harvest at physiological maturity.,As recommended,Medium,Harvest management practices for Tomato.
+281,Rice,Transplanting,Transplanting,Transplant healthy seedlings at recommended spacing.,Weekly,Medium,Transplanting management practices for Rice.
+282,Wheat,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Weekly,Low,Vegetative management practices for Wheat.
+283,Banana,Fruit Development,Fruit Development,Maintain balanced irrigation.,Every 15 days,Medium,Fruit Development management practices for Banana.
+284,Cotton,Boll Development,Boll Development,Irrigate as required.,Once,Low,Boll Development management practices for Cotton.
+285,Potato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,As recommended,Medium,Vegetative management practices for Potato.
+286,Potato,Planting,Planting,Maintain recommended spacing.,Critical growth stage,Medium,Planting management practices for Potato.
+287,Chilli,Flowering,Flowering,Avoid moisture stress and monitor pests.,As recommended,Low,Flowering management practices for Chilli.
+288,Chilli,Nursery,Nursery,Maintain adequate moisture and healthy seedlings.,As recommended,Low,Nursery management practices for Chilli.
+289,Potato,Harvest,Harvest,Harvest at physiological maturity.,Once,Low,Harvest management practices for Potato.
+290,Potato,Planting,Planting,Maintain recommended spacing.,As recommended,High,Planting management practices for Potato.
+291,Tomato,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Critical growth stage,Low,Vegetative management practices for Tomato.
+292,Rice,Tillering,Tillering,Top dress nitrogen as recommended.,Once,Low,Tillering management practices for Rice.
+293,Tomato,Harvest,Harvest,Harvest at physiological maturity.,Weekly,Medium,Harvest management practices for Tomato.
+294,Soybean,Pod Filling,Pod Filling,Avoid water stress.,Weekly,Low,Pod Filling management practices for Soybean.
+295,Soybean,Vegetative,Vegetative,Apply balanced fertilizer and monitor weeds.,Once,Low,Vegetative management practices for Soybean.
+296,Cotton,Flowering,Flowering,Avoid moisture stress and monitor pests.,Once,Medium,Flowering management practices for Cotton.
+297,Maize,Sowing,Sowing,Use certified seeds at recommended spacing.,Critical growth stage,High,Sowing management practices for Maize.
+298,Potato,Tuber Formation,Tuber Formation,Follow recommended agronomic practices.,Critical growth stage,High,Tuber Formation management practices for Potato.
+299,Maize,Silking,Silking,Maintain soil moisture.,As recommended,Low,Silking management practices for Maize.
+300,Soybean,Flowering,Flowering,Avoid moisture stress and monitor pests.,Weekly,High,Flowering management practices for Soybean.
