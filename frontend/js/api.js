@@ -5,9 +5,9 @@
 class ApiService {
     static async sendQuery(question) {
         const endpoints = [
+            '/chat',
             'http://127.0.0.1:8000/chat',
-            'http://localhost:8000/chat',
-            '/chat'
+            'http://localhost:8000/chat'
         ];
 
         let lastError = null;

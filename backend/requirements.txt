@@ -11,3 +11,6 @@ python-multipart
 numpy
 joblib
 requests
+motor
+pymongo
+dnspython

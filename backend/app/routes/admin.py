@@ -1,0 +1,283 @@
+from typing import Any, Dict, List, Optional
+from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+
+from app.services.snapserve_service import SnapServeService
+from app.core.database import Database
+
+router = APIRouter(prefix="/api/admin", tags=["Admin Dashboard"])
+
+
+class OutboundCallRequest(BaseModel):
+    agentId: int
+    toNumber: str
+    farmerName: Optional[str] = "Farmer"
+    crop: Optional[str] = "Rice"
+    language: Optional[str] = "hi-IN"
+    alertMessage: Optional[str] = None
+
+
+class AssignPhoneRequest(BaseModel):
+    agentId: int
+
+
+@router.get("/status")
+async def get_status():
+    """
+    Get live MCP connection health, SnapServe wallet balance, telephony, and agent counts.
+    """
+    status_data = await SnapServeService.get_system_status()
+    return JSONResponse(content=status_data)
+
+
+@router.get("/agents")
+async def get_agents():
+    """
+    List all configured agents.
+    """
+    agents = await SnapServeService.get_agents()
+    return JSONResponse(content=agents)
+
+
+@router.patch("/agents/{agent_id}/toggle")
+async def toggle_agent(agent_id: int):
+    """
+    Toggle agent active / draft status.
+    """
+    result = await SnapServeService.toggle_agent(agent_id)
+    return JSONResponse(content=result)
+
+
+@router.get("/phone-numbers")
+async def get_phone_numbers():
+    """
+    List all available and assigned phone numbers.
+    """
+    phones = await SnapServeService.get_phone_numbers()
+    return JSONResponse(content=phones)
+
+
+@router.patch("/phone-numbers/{phone_id}/assign")
+async def assign_phone(phone_id: int, payload: AssignPhoneRequest):
+    """
+    Assign a phone number to an agent.
+    """
+    result = await SnapServeService.assign_phone(phone_id, payload.agentId)
+    return JSONResponse(content=result)
+
+
+@router.get("/calls")
+async def get_calls(
+    agentId: Optional[int] = Query(None),
+    status: Optional[str] = Query(None),
+    search: Optional[str] = Query(None)
+):
+    """
+    Fetch live call logs, audio recordings, and transcripts.
+    """
+    calls = await SnapServeService.get_calls(agent_id=agentId, status=status)
+    
+    if search:
+        s = search.lower()
+        calls = [
+            c for c in calls
+            if s in (c.get("toNumber") or "").lower()
+            or s in (c.get("transcript") or "").lower()
+            or s in (c.get("callSummary") or "").lower()
+            or s in (c.get("agentName") or "").lower()
+        ]
+        
+    return JSONResponse(content=calls)
+
+
+@router.get("/calls/{call_id}")
+async def get_call_detail(call_id: int):
+    """
+    Fetch deep details and transcript for a specific call.
+    """
+    call = await SnapServeService.get_call(call_id)
+    if not call:
+        raise HTTPException(status_code=404, detail="Call record not found.")
+    return JSONResponse(content=call)
+
+
+@router.post("/calls/outbound")
+async def initiate_test_call(payload: OutboundCallRequest):
+    """
+    Trigger an outbound test call to a farmer with custom advisory variables.
+    """
+    variables = {
+        "farmer_name": payload.farmerName,
+        "crop": payload.crop,
+        "language": payload.language or "hi-IN"
+    }
+    if payload.alertMessage:
+        variables["alert"] = payload.alertMessage
+
+    result = await SnapServeService.trigger_outbound_call(
+        agent_id=payload.agentId,
+        to_number=payload.toNumber,
+        language=payload.language or "hi-IN",
+        farmer_name=payload.farmerName,
+        crop=payload.crop,
+        issue=payload.alertMessage,
+        variables=variables
+    )
+    return JSONResponse(content=result)
+
+
+@router.get("/errors-and-logs")
+async def get_errors_and_logs():
+    """
+    Aggregated error log stream, latency benchmarks, and diagnostics.
+    """
+    status_data = await SnapServeService.get_system_status()
+    calls = await SnapServeService.get_calls()
+    
+    # Calculate performance metrics
+    total_calls = len(calls)
+    completed_calls = [c for c in calls if c.get("status") == "completed"]
+    failed_calls = [c for c in calls if c.get("status") in ["failed", "no_pickup", "cancelled", "busy"]]
+    
+    avg_stt_latency = 0
+    avg_llm_latency = 0
+    avg_tts_latency = 0
+    
+    stt_vals = [c.get("sttLatencyMs") for c in calls if c.get("sttLatencyMs") is not None]
+    llm_vals = [c.get("llmLatencyMs") for c in calls if c.get("llmLatencyMs") is not None]
+    tts_vals = [c.get("ttsFirstChunkMs") for c in calls if c.get("ttsFirstChunkMs") is not None]
+    
+    if stt_vals:
+        avg_stt_latency = int(sum(stt_vals) / len(stt_vals))
+    if llm_vals:
+        avg_llm_latency = int(sum(llm_vals) / len(llm_vals))
+    if tts_vals:
+        avg_tts_latency = int(sum(tts_vals) / len(tts_vals))
+
+    return JSONResponse(content={
+        "recentErrors": status_data.get("recentErrors", []),
+        "metrics": {
+            "totalCalls": total_calls,
+            "completedCalls": len(completed_calls),
+            "failedCalls": len(failed_calls),
+            "successRate": round((len(completed_calls) / total_calls * 100), 1) if total_calls > 0 else 100.0,
+            "avgSttLatencyMs": avg_stt_latency,
+            "avgLlmLatencyMs": avg_llm_latency,
+            "avgTtsFirstChunkMs": avg_tts_latency
+        },
+        "mcpStatus": status_data.get("mcp", {}),
+        "wallet": status_data.get("wallet", {})
+    })
+
+
+@router.post("/provision-stellar-agent")
+async def provision_stellar_agent():
+    """
+    Auto-provision or update the specialized Stellar Agri Voice Advisor agent on SnapServe.
+    """
+    agent_payload = {
+        "name": "Stellar Agri Voice Advisor",
+        "agentMode": "managed",
+        "agentType": "customer_support",
+        "status": "active",
+        "language": "hi-IN",
+        "asrProvider": "sarvam",
+        "asrModel": "saaras:v3",
+        "asrLanguage": "hi-IN",
+        "asrBackgroundDenoising": True,
+        "asrSmartEndpointing": "livekit",
+        "llmProvider": "sarvam",
+        "llmModel": "sarvam-105b-conversations",
+        "ttsProvider": "sarvam",
+        "ttsVoice": "ritu",
+        "ttsModel": "bulbul:v3",
+        "telephonyProvider": "vobiz",
+        "firstSpeaker": "assistant",
+        "greetingMessage": "Namaste! Main Stellar Agri AI se bol raha hoon. Fasal, beemari, khad ya mandi bhav se judi kya madad chahiye aapko?",
+        "systemPrompt": """You are Stellar Agri AI, an expert agronomist, crop doctor, and farming consultant.
+You help Indian farmers over phone calls with:
+1. Crop Suitability & Sowing Schedules (Paddy, Cotton, Wheat, Maize, Tomato, Sugarcane, etc.).
+2. Fertilizer Dosage (Urea, DAP, MOP, SSP recommendations based on crop and growth stage).
+3. Pest & Disease Diagnosis and Remedy (Brown plant hopper, blight, stem borer, wilt, rust).
+4. Real-Time Mandi Prices (APMC modal price benchmarks per quintal).
+5. Weather-Based Irrigation & Spray Advisories (Rain alerts, humidity, optimal spray timing).
+
+CRITICAL VOICE CALL RULES:
+- Keep answers concise, natural, and spoken (1-3 sentences per turn).
+- Avoid reciting large tables or complex scientific terms; use practical farmer-friendly language.
+- Speak in Hindi / English / Hinglish or the farmer's preferred language.
+- Always provide clear actionable next steps (exact fertilizer dosage or pesticide name).""",
+        "endCallPhrases": "dhanyawad,alvida,goodbye,bye,ram ram,namaste",
+        "silenceTimeoutSeconds": 25,
+        "backchannelingEnabled": True,
+        "backchannelingFrequency": 0.4,
+        "noiseCancellationEnabled": True,
+        "tools": [
+            {
+                "type": "end_call",
+                "name": "end_call",
+                "description": "End call when conversation is finished"
+            }
+        ]
+    }
+    
+    result = await SnapServeService.create_agent(agent_payload)
+    if result.get("success") and result.get("data", {}).get("id"):
+        agent_id = result["data"]["id"]
+        # Try assigning existing phone number
+        phones = await SnapServeService.get_phone_numbers()
+        if phones:
+            await SnapServeService.assign_phone(phones[0]["id"], agent_id)
+            
+    return JSONResponse(content=result)
+
+
+# ── MongoDB Farmer Enquiries Management ──
+
+class UpdateEnquiryStatusRequest(BaseModel):
+    status: str
+
+
+@router.get("/enquiries")
+async def get_enquiries(
+    search: Optional[str] = Query(None),
+    status: Optional[str] = Query(None),
+    limit: int = Query(100)
+):
+    """
+    Fetch all farmer call enquiries from MongoDB.
+    """
+    enquiries = await Database.get_enquiries(search=search, status=status, limit=limit)
+    return JSONResponse(content=enquiries)
+
+
+@router.patch("/enquiries/{enquiry_id}/status")
+async def update_enquiry_status(enquiry_id: str, payload: UpdateEnquiryStatusRequest):
+    """
+    Update enquiry resolution state (e.g. resolved, pending, follow_up).
+    """
+    success = await Database.update_enquiry_status(enquiry_id, payload.status)
+    if not success:
+        raise HTTPException(status_code=404, detail="Enquiry not found.")
+    return {"success": True, "message": "Enquiry status updated."}
+
+
+@router.delete("/enquiries/{enquiry_id}")
+async def delete_enquiry(enquiry_id: str):
+    """
+    Delete an enquiry record from the database.
+    """
+    success = await Database.delete_enquiry(enquiry_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Enquiry not found.")
+    return {"success": True, "message": "Enquiry deleted."}
+
+
+@router.get("/database-status")
+async def get_database_status():
+    """
+    Get MongoDB Atlas connection status and storage mode.
+    """
+    db_status = await Database.get_status()
+    return JSONResponse(content=db_status)

@@ -43,6 +43,68 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 4. Instant Call Enquiry Form Handler
+    const callEnquiryForm = document.getElementById('call-enquiry-form');
+    const callNowBtn = document.getElementById('call-now-btn');
+    const callStatusBox = document.getElementById('call-status-box');
+    const callStatusTitle = document.getElementById('call-status-title');
+    const callStatusDesc = document.getElementById('call-status-desc');
+
+    if (callEnquiryForm) {
+        callEnquiryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const farmerName = document.getElementById('enquiry-name').value.trim();
+            const phone = document.getElementById('enquiry-phone').value.trim();
+            const crop = document.getElementById('enquiry-crop').value.trim() || 'Paddy';
+            const lang = document.getElementById('enquiry-lang').value || 'hi-IN';
+            const issue = document.getElementById('enquiry-issue').value.trim() || 'General farming query';
+
+            if (!phone) {
+                alert('Please enter your mobile phone number.');
+                return;
+            }
+
+            // UI State: Calling
+            callNowBtn.disabled = true;
+            callNowBtn.innerHTML = '<span>⏳ Connecting Call...</span>';
+            callStatusBox.classList.remove('hidden');
+            callStatusTitle.innerText = `Calling ${phone}...`;
+            callStatusDesc.innerText = `Connecting with AI Agronomist (Agent #1028). Your phone will ring in 3-5 seconds.`;
+
+            try {
+                const requestUrl = window.location.origin.startsWith('http') ? '/api/request-call' : 'http://127.0.0.1:8000/api/request-call';
+                const res = await fetch(requestUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        farmer_name: farmerName,
+                        phone_number: phone,
+                        crop: crop,
+                        language: lang,
+                        issue: issue
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && (data.success || data.call_id)) {
+                    callStatusTitle.innerText = `📲 Call Active (Call #${data.call_id || 'Live'})`;
+                    callStatusDesc.innerText = `Please answer the phone call from +918071581407 to discuss ${crop} advice with your AI Agronomist!`;
+                } else {
+                    callStatusTitle.innerText = `❌ Call Request Notice`;
+                    callStatusDesc.innerText = data.error || 'Could not initiate call. Please ensure your number is reachable.';
+                }
+            } catch (err) {
+                callStatusTitle.innerText = `❌ Connection Error`;
+                callStatusDesc.innerText = `Failed to connect to backend: ${err.message}`;
+            } finally {
+                callNowBtn.disabled = false;
+                callNowBtn.innerHTML = '<span class="call-icon">📲</span><span>Call Me Immediately</span>';
+            }
+        });
+    }
+
     // Main Query Execution Flow
     async function processQuery(query) {
         // UI State: Loading

@@ -1,0 +1,782 @@
+/**
+ * Stellar Agri AI - Admin Dashboard Controller
+ * MCP Connection, Voice Agents, Call Logs, Farmer Enquiries & Error Diagnostics
+ */
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // ── Auth Guard: Ensure Authenticated Session ──
+  async function checkAuthSession() {
+    try {
+      const token = localStorage.getItem('stellar_admin_token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const res = await fetch('/api/auth/me', { headers });
+      if (!res.ok) {
+        window.location.href = '/login';
+        return false;
+      }
+      const data = await res.json();
+      if (!data.authenticated) {
+        window.location.href = '/login';
+        return false;
+      }
+      return true;
+    } catch (err) {
+      window.location.href = '/login';
+      return false;
+    }
+  }
+
+  const isAuthed = await checkAuthSession();
+  if (!isAuthed) return;
+
+  // State
+  let dashboardData = null;
+  let callsData = [];
+  let enquiriesData = [];
+  let currentFilterStatus = 'all';
+  let searchQuery = '';
+  let enquiryFilterStatus = 'all';
+  let enquirySearchQuery = '';
+  let autoRefreshTimer = null;
+
+  // DOM Elements
+  const mcpBadge = document.getElementById('mcp-status-pill');
+  const pingLatencyEl = document.getElementById('ping-latency');
+  const walletInrEl = document.getElementById('wallet-inr');
+  const walletCentsEl = document.getElementById('wallet-cents');
+  const activeNumberEl = document.getElementById('active-phone-number');
+  const totalCallsEl = document.getElementById('total-calls-count');
+  const avgLatencyEl = document.getElementById('avg-llm-latency');
+  const agentsContainer = document.getElementById('agents-grid');
+  const callsTableBody = document.getElementById('calls-table-body');
+  const enquiriesTableBody = document.getElementById('enquiries-table-body');
+  const dbStatusBadge = document.getElementById('db-status-badge');
+  const terminalBody = document.getElementById('terminal-body');
+  const toastContainer = document.getElementById('toast-container');
+  const logoutBtn = document.getElementById('admin-logout-btn');
+  
+  // Drawer Elements
+  const drawerOverlay = document.getElementById('transcript-drawer');
+  const drawerCloseBtn = document.getElementById('drawer-close-btn');
+  const drawerCallId = document.getElementById('drawer-call-id');
+  const drawerSummary = document.getElementById('drawer-summary');
+  const drawerEvaluation = document.getElementById('drawer-evaluation');
+  const drawerAudioPlayer = document.getElementById('drawer-audio');
+  const drawerAudioContainer = document.getElementById('drawer-audio-container');
+  const drawerTranscriptThread = document.getElementById('drawer-transcript-thread');
+
+  // Sign Out Handler
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (e) {}
+      localStorage.removeItem('stellar_admin_token');
+      window.location.href = '/login';
+    });
+  }
+
+  // Tab switching
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const targetId = btn.getAttribute('data-tab');
+      const targetPanel = document.getElementById(targetId);
+      if (targetPanel) targetPanel.classList.add('active');
+    });
+  });
+
+  // Outbound Call Form
+  const outboundForm = document.getElementById('outbound-call-form');
+  if (outboundForm) {
+    outboundForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const agentId = parseInt(document.getElementById('outbound-agent-select').value);
+      const toNumber = document.getElementById('outbound-phone').value.trim();
+      const farmerName = document.getElementById('outbound-farmer-name').value.trim() || 'Farmer';
+      const crop = document.getElementById('outbound-crop').value.trim() || 'Rice';
+      const language = document.getElementById('outbound-language')?.value || 'hi-IN';
+      const alertMsg = document.getElementById('outbound-alert-msg').value.trim();
+
+      if (!toNumber) {
+        showToast('Please enter a valid destination phone number in E.164 format (+91...)', 'error');
+        return;
+      }
+
+      showToast(`Initiating call to ${toNumber} in ${language}...`, 'info');
+      try {
+        const res = await fetch('/api/admin/calls/outbound', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            agentId,
+            toNumber,
+            farmerName,
+            crop,
+            language,
+            alertMessage: alertMsg || undefined
+          })
+        });
+        const result = await res.json();
+        if (result.success || result.id || (result.data && result.data.id)) {
+          const callId = result.id || (result.data && result.data.id);
+          showToast(`✅ Call #${callId} initiated successfully!`, 'success');
+          setTimeout(fetchCalls, 2000);
+        } else {
+          showToast(`❌ Call failed: ${result.error || result.details || 'Unknown error'}`, 'error');
+        }
+      } catch (err) {
+        showToast(`❌ Network Error: ${err.message}`, 'error');
+      }
+    });
+  }
+
+  // Provision Agent Button
+  const provisionBtn = document.getElementById('provision-agent-btn');
+  if (provisionBtn) {
+    provisionBtn.addEventListener('click', async () => {
+      provisionBtn.disabled = true;
+      provisionBtn.innerText = 'Creating Agent...';
+      try {
+        const res = await fetch('/api/admin/provision-stellar-agent', { method: 'POST' });
+        const data = await res.json();
+        if (data.success || data.id || (data.data && data.data.id)) {
+          showToast('✅ Stellar Agri Voice Advisor created & phone assigned!', 'success');
+          await fetchDashboardStatus();
+        } else {
+          showToast(`❌ Failed: ${data.error || 'Check API key/permissions'}`, 'error');
+        }
+      } catch (err) {
+        showToast(`❌ Error: ${err.message}`, 'error');
+      } finally {
+        provisionBtn.disabled = false;
+        provisionBtn.innerText = '✨ Provision Stellar Agri Voice Advisor';
+      }
+    });
+  }
+
+  // Filter & Search (Calls)
+  const statusFilter = document.getElementById('status-filter');
+  if (statusFilter) {
+    statusFilter.addEventListener('change', (e) => {
+      currentFilterStatus = e.target.value;
+      renderCallsTable();
+    });
+  }
+
+  const searchInput = document.getElementById('call-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      renderCallsTable();
+    });
+  }
+
+  // Filter & Search (Farmer Enquiries)
+  const enquiryStatusFilterEl = document.getElementById('enquiry-status-filter');
+  if (enquiryStatusFilterEl) {
+    enquiryStatusFilterEl.addEventListener('change', (e) => {
+      enquiryFilterStatus = e.target.value;
+      fetchEnquiries();
+    });
+  }
+
+  const enquirySearchInputEl = document.getElementById('enquiry-search-input');
+  if (enquirySearchInputEl) {
+    enquirySearchInputEl.addEventListener('input', (e) => {
+      enquirySearchQuery = e.target.value.toLowerCase().trim();
+      fetchEnquiries();
+    });
+  }
+
+  // Drawer Controls
+  if (drawerCloseBtn) {
+    drawerCloseBtn.addEventListener('click', () => {
+      drawerOverlay.classList.remove('open');
+      if (drawerAudioPlayer) drawerAudioPlayer.pause();
+    });
+  }
+
+  if (drawerOverlay) {
+    drawerOverlay.addEventListener('click', (e) => {
+      if (e.target === drawerOverlay) {
+        drawerOverlay.classList.remove('open');
+        if (drawerAudioPlayer) drawerAudioPlayer.pause();
+      }
+    });
+  }
+
+  // Refresh Button
+  const refreshBtn = document.getElementById('refresh-all-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      fetchDashboardStatus();
+      fetchCalls();
+      fetchEnquiries();
+      fetchDbStatus();
+      fetchErrorsAndLogs();
+      showToast('Dashboard data refreshed', 'info');
+    });
+  }
+
+  // ── Fetch Operations ──
+
+  async function fetchDashboardStatus() {
+    try {
+      const res = await fetch('/api/admin/status');
+      const data = await res.json();
+      dashboardData = data;
+      renderStatusAndKPIs(data);
+      renderAgents(data.agents?.list || []);
+      populateAgentDropdown(data.agents?.list || []);
+    } catch (err) {
+      console.error('Status fetch failed:', err);
+    }
+  }
+
+  async function fetchDbStatus() {
+    try {
+      const res = await fetch('/api/admin/database-status');
+      const data = await res.json();
+      if (dbStatusBadge) {
+        if (data.type === 'mongodb_atlas' && data.connected) {
+          dbStatusBadge.innerHTML = '🍃 MongoDB Atlas: Connected';
+          dbStatusBadge.style.color = '#34d399';
+          dbStatusBadge.style.borderColor = 'rgba(52, 211, 153, 0.4)';
+          dbStatusBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+        } else {
+          dbStatusBadge.innerHTML = '📁 Storage: Local JSON Mode';
+          dbStatusBadge.style.color = '#fbbf24';
+          dbStatusBadge.style.borderColor = 'rgba(251, 191, 36, 0.4)';
+          dbStatusBadge.style.background = 'rgba(245, 158, 11, 0.12)';
+        }
+      }
+    } catch (err) {
+      console.error('DB status check failed:', err);
+    }
+  }
+
+  async function fetchEnquiries() {
+    try {
+      let url = `/api/admin/enquiries?limit=100`;
+      if (enquiryFilterStatus && enquiryFilterStatus !== 'all') {
+        url += `&status=${encodeURIComponent(enquiryFilterStatus)}`;
+      }
+      if (enquirySearchQuery) {
+        url += `&search=${encodeURIComponent(enquirySearchQuery)}`;
+      }
+      const res = await fetch(url);
+      enquiriesData = await res.json();
+      renderEnquiriesTable();
+    } catch (err) {
+      console.error('Enquiries fetch failed:', err);
+    }
+  }
+
+  async function fetchCalls() {
+    try {
+      const res = await fetch('/api/admin/calls');
+      callsData = await res.json();
+      renderCallsTable();
+    } catch (err) {
+      console.error('Calls fetch failed:', err);
+    }
+  }
+
+  async function fetchErrorsAndLogs() {
+    try {
+      const res = await fetch('/api/admin/errors-and-logs');
+      const data = await res.json();
+      renderErrorsAndTerminal(data);
+    } catch (err) {
+      console.error('Errors fetch failed:', err);
+    }
+  }
+
+  // ── Render Functions ──
+
+  function renderStatusAndKPIs(data) {
+    const mcp = data.mcp || {};
+    const wallet = data.wallet || {};
+    const telephony = data.telephony || {};
+    const agents = data.agents || {};
+
+    // MCP Pill
+    if (mcpBadge) {
+      const dot = mcpBadge.querySelector('.pulse-dot');
+      const text = mcpBadge.querySelector('.status-lbl');
+      if (mcp.connected) {
+        dot.className = 'pulse-dot';
+        text.innerText = `MCP Connected (${mcp.toolCount || 76} tools)`;
+      } else {
+        dot.className = 'pulse-dot offline';
+        text.innerText = 'MCP Disconnected';
+      }
+    }
+
+    if (pingLatencyEl) {
+      pingLatencyEl.innerText = `${mcp.pingLatencyMs || 0} ms`;
+    }
+
+    // Wallet
+    if (walletInrEl) {
+      walletInrEl.innerText = `₹${(wallet.balanceInr || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    }
+    if (walletCentsEl) {
+      walletCentsEl.innerText = `${(wallet.balanceCents || 0).toLocaleString('en-IN')} paise (approx ${(wallet.balanceInr / 5).toFixed(0)} mins)`;
+    }
+
+    // Phone Number
+    if (activeNumberEl) {
+      const primaryNumber = telephony.numbers?.[0];
+      if (primaryNumber) {
+        activeNumberEl.innerText = primaryNumber.number;
+      } else {
+        activeNumberEl.innerText = 'No number linked';
+      }
+    }
+
+    // Total agents
+    const activeAgentsCount = document.getElementById('active-agents-count');
+    if (activeAgentsCount) {
+      activeAgentsCount.innerText = `${agents.activeCount || 0} Active / ${agents.total || 0} Total`;
+    }
+  }
+
+  function renderAgents(agentsList) {
+    if (!agentsContainer) return;
+    agentsContainer.innerHTML = '';
+
+    if (!agentsList || agentsList.length === 0) {
+      agentsContainer.innerHTML = `
+        <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">
+          <p>No voice agents configured yet.</p>
+        </div>`;
+      return;
+    }
+
+    agentsList.forEach(agent => {
+      const isActive = agent.status === 'active';
+      const card = document.createElement('div');
+      card.className = 'agent-card';
+
+      // Format specs cleanly
+      const formatModel = (val) => {
+        if (!val) return 'Default';
+        if (val.length > 22 && val.includes('-')) {
+          return val.split('-')[0] + '...';
+        }
+        return val;
+      };
+
+      const asrText = `${agent.asrProvider || 'Sarvam'}${agent.asrModel ? ' (' + formatModel(agent.asrModel) + ')' : ''}`;
+      const llmText = `${agent.llmProvider || 'Sarvam'}${agent.llmModel ? ' (' + formatModel(agent.llmModel) + ')' : ''}`;
+      const ttsText = `${agent.ttsProvider || 'Sarvam'}${agent.ttsVoice ? ' (' + formatModel(agent.ttsVoice) + ')' : ''}`;
+      const telText = `${agent.telephonyProvider || 'Vobiz'}`;
+
+      card.innerHTML = `
+        <div class="agent-card-header">
+          <div class="agent-title">
+            <h3 title="${escapeHtml(agent.name || '')}">${escapeHtml(agent.name || 'Unnamed Agent')}</h3>
+            <span class="agent-id">ID: #${agent.id} • ${agent.language || 'en-IN'}</span>
+          </div>
+          <span class="status-tag ${agent.status}">${agent.status}</span>
+        </div>
+
+        <div class="agent-specs">
+          <div class="spec-item" title="STT: ${escapeHtml(agent.asrProvider || '')} / ${escapeHtml(agent.asrModel || '')}">
+            <div class="spec-label">STT / ASR</div>
+            <span class="spec-val">${escapeHtml(asrText)}</span>
+          </div>
+          <div class="spec-item" title="LLM: ${escapeHtml(agent.llmProvider || '')} / ${escapeHtml(agent.llmModel || '')}">
+            <div class="spec-label">LLM Brain</div>
+            <span class="spec-val">${escapeHtml(llmText)}</span>
+          </div>
+          <div class="spec-item" title="TTS: ${escapeHtml(agent.ttsProvider || '')} / ${escapeHtml(agent.ttsVoice || '')}">
+            <div class="spec-label">TTS Voice</div>
+            <span class="spec-val">${escapeHtml(ttsText)}</span>
+          </div>
+          <div class="spec-item" title="Telephony: ${escapeHtml(telText)}">
+            <div class="spec-label">Telephony</div>
+            <span class="spec-val">${escapeHtml(telText)}</span>
+          </div>
+        </div>
+
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${escapeHtml(agent.greetingMessage || '')}">
+          <strong>Greeting:</strong> "${escapeHtml(agent.greetingMessage || 'Hello, how can I help you today?')}"
+        </div>
+
+        <div class="agent-actions">
+          <button class="btn ${isActive ? 'btn-outline' : 'btn-primary'} toggle-agent-btn" data-id="${agent.id}" style="width: 100%; font-size: 0.8rem;">
+            ${isActive ? '⏸️ Deactivate (Set Draft)' : '▶️ Activate Agent'}
+          </button>
+        </div>
+      `;
+
+      card.querySelector('.toggle-agent-btn').addEventListener('click', async () => {
+        try {
+          showToast(`Toggling Agent #${agent.id}...`, 'info');
+          const res = await fetch(`/api/admin/agents/${agent.id}/toggle`, { method: 'PATCH' });
+          const resData = await res.json();
+          showToast(`Agent status updated!`, 'success');
+          await fetchDashboardStatus();
+        } catch (e) {
+          showToast(`Toggle failed: ${e.message}`, 'error');
+        }
+      });
+
+      agentsContainer.appendChild(card);
+    });
+  }
+
+  function populateAgentDropdown(agentsList) {
+    const select = document.getElementById('outbound-agent-select');
+    if (!select) return;
+    select.innerHTML = '';
+    agentsList.forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = a.id;
+      opt.textContent = `#${a.id} - ${a.name} (${a.status.toUpperCase()})`;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderCallsTable() {
+    if (!callsTableBody) return;
+    callsTableBody.innerHTML = '';
+
+    let filtered = callsData.filter(c => {
+      if (currentFilterStatus !== 'all' && c.status !== currentFilterStatus) return false;
+      if (searchQuery) {
+        const str = `${c.toNumber} ${c.agentName} ${c.transcript || ''} ${c.callSummary || ''}`.toLowerCase();
+        if (!str.includes(searchQuery)) return false;
+      }
+      return true;
+    });
+
+    if (totalCallsEl) {
+      totalCallsEl.innerText = `${callsData.length} Calls`;
+    }
+
+    if (filtered.length === 0) {
+      callsTableBody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 36px; color: var(--text-dim);">
+            No calls matching current filters.
+          </td>
+        </tr>`;
+      return;
+    }
+
+    filtered.forEach(call => {
+      const row = document.createElement('tr');
+      const dateStr = call.createdAt ? new Date(call.createdAt).toLocaleString('en-IN', {
+        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      }) : 'N/A';
+
+      const durationStr = call.durationSeconds ? `${call.durationSeconds}s` : '0s';
+      const costInr = call.costCents ? `₹${(call.costCents / 100).toFixed(2)}` : '₹0.00';
+
+      row.innerHTML = `
+        <td style="font-weight: 600;">#${call.id}</td>
+        <td>
+          <div style="font-weight: 500;">${call.toNumber || 'Anonymous'}</div>
+          <div style="font-size: 0.72rem; color: var(--text-dim);">${call.agentName || 'Agent'} (ID: ${call.agentId})</div>
+        </td>
+        <td><span class="status-tag ${call.status}">${call.status}</span></td>
+        <td>${durationStr}</td>
+        <td style="color: var(--accent-light); font-weight: 600;">${costInr}</td>
+        <td style="font-size: 0.75rem; color: var(--text-muted);">${dateStr}</td>
+        <td>
+          <button class="btn btn-outline view-transcript-btn" style="padding: 4px 10px; font-size: 0.75rem;">
+            🔍 View Transcript
+          </button>
+        </td>
+      `;
+
+      row.addEventListener('click', () => openCallDrawer(call));
+      callsTableBody.appendChild(row);
+    });
+  }
+
+  function openCallDrawer(call) {
+    if (!drawerOverlay) return;
+
+    if (drawerCallId) drawerCallId.innerText = `Call #${call.id} (${call.toNumber || ''})`;
+    if (drawerSummary) {
+      drawerSummary.innerText = call.callSummary || 'No AI summary generated for this call.';
+    }
+    if (drawerEvaluation) {
+      drawerEvaluation.innerText = call.successEvaluation || 'No evaluation recorded.';
+    }
+
+    // Audio recording
+    if (drawerAudioContainer) {
+      if (call.recordingUrl) {
+        drawerAudioContainer.style.display = 'block';
+        drawerAudioPlayer.src = call.recordingUrl;
+      } else {
+        drawerAudioContainer.style.display = 'none';
+        drawerAudioPlayer.src = '';
+      }
+    }
+
+    // Transcript Thread
+    if (drawerTranscriptThread) {
+      drawerTranscriptThread.innerHTML = '';
+      if (call.transcript && call.transcript.trim()) {
+        const lines = call.transcript.split('\n');
+        lines.forEach(line => {
+          if (!line.trim()) return;
+          const bubble = document.createElement('div');
+          const isAgent = line.toLowerCase().startsWith('agent:') || line.toLowerCase().startsWith('assistant:');
+          bubble.className = `chat-bubble ${isAgent ? 'agent' : 'caller'}`;
+
+          let author = isAgent ? (call.agentName || 'Voice Agent') : 'Farmer / Caller';
+          let text = line.replace(/^(Agent:|Assistant:|Caller:|User:)/i, '').trim();
+
+          bubble.innerHTML = `
+            <div class="bubble-author">${author}</div>
+            <div class="bubble-content">${escapeHtml(text)}</div>
+          `;
+          drawerTranscriptThread.appendChild(bubble);
+        });
+      } else {
+        drawerTranscriptThread.innerHTML = `
+          <div style="text-align: center; color: var(--text-dim); padding: 24px;">
+            No conversation transcript recorded for this session.
+          </div>`;
+      }
+    }
+
+    drawerOverlay.classList.add('open');
+  }
+
+  function renderErrorsAndTerminal(data) {
+    if (!terminalBody) return;
+    terminalBody.innerHTML = '';
+
+    const metrics = data.metrics || {};
+    if (avgLatencyEl) {
+      avgLatencyEl.innerText = `${metrics.avgLlmLatencyMs || 0} ms`;
+    }
+
+    const errors = data.recentErrors || [];
+    if (errors.length === 0) {
+      terminalBody.innerHTML = `
+        <div class="log-entry ok">
+          <div class="log-meta">[${new Date().toLocaleTimeString()}] SYSTEM DIAGNOSTICS: OK</div>
+          <div>All SnapServe MCP channels, REST endpoints, and Webhooks are functioning normally with 0 reported runtime errors.</div>
+        </div>
+      `;
+    } else {
+      errors.forEach(err => {
+        const item = document.createElement('div');
+        item.className = 'log-entry err';
+        item.innerHTML = `
+          <div class="log-meta">[${new Date(err.timestamp).toLocaleTimeString()}] ${escapeHtml(err.category)} (Status: ${err.status_code || 500})</div>
+          <div>${escapeHtml(err.message)}</div>
+        `;
+        terminalBody.appendChild(item);
+      });
+    }
+
+    // Append latency telemetry
+    const latencyItem = document.createElement('div');
+    latencyItem.className = 'log-entry ok';
+    latencyItem.innerHTML = `
+      <div class="log-meta">[TELEMETRY] VOICE PIPELINE LATENCY BENCHMARKS</div>
+      <div>⚡ STT Latency: <strong>${metrics.avgSttLatencyMs || 0}ms</strong> | ⚡ LLM 1st-Token: <strong>${metrics.avgLlmLatencyMs || 0}ms</strong> | ⚡ TTS Audio Chunk: <strong>${metrics.avgTtsFirstChunkMs || 0}ms</strong></div>
+    `;
+    terminalBody.appendChild(latencyItem);
+  }
+
+  function showToast(message, type = 'info') {
+    if (!toastContainer) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    let icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    if (type === 'error') icon = '❌';
+
+    toast.innerHTML = `<span>${icon}</span> <span>${escapeHtml(message)}</span>`;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  // ── Farmer Enquiries Operations & Rendering ──
+
+  function renderEnquiriesTable() {
+    if (!enquiriesTableBody) return;
+    enquiriesTableBody.innerHTML = '';
+
+    if (!Array.isArray(enquiriesData) || enquiriesData.length === 0) {
+      enquiriesTableBody.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align: center; color: var(--text-dim); padding: 32px;">
+            No farmer enquiries found matching the criteria.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    enquiriesData.forEach(item => {
+      const row = document.createElement('tr');
+      const status = (item.status || 'pending').toLowerCase();
+      let badgeClass = 'badge-pending';
+      if (status === 'completed' || status === 'resolved') badgeClass = 'badge-success';
+      if (status === 'failed') badgeClass = 'badge-failed';
+      if (status === 'call_initiated') badgeClass = 'badge-ringing';
+
+      const dateStr = item.created_at ? new Date(item.created_at).toLocaleString('en-IN') : '--';
+
+      row.innerHTML = `
+        <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">#${item.id}</td>
+        <td>
+          <div style="font-weight: 600; color: #fff;">${escapeHtml(item.farmer_name || 'Farmer')}</div>
+          <div style="font-size: 0.78rem; color: var(--accent-light);">${escapeHtml(item.phone_number || '')}</div>
+        </td>
+        <td><span class="status-badge" style="background: rgba(16,185,129,0.15); color: #6ee7b7; border-color: rgba(16,185,129,0.3);">${escapeHtml(item.crop || 'General')}</span></td>
+        <td style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(item.language || 'hi-IN')}</td>
+        <td style="max-width: 260px; font-size: 0.82rem; color: var(--text-main); white-space: normal;">
+          ${escapeHtml(item.issue || '')}
+        </td>
+        <td><span class="status-badge ${badgeClass}">${escapeHtml(item.status || 'Unknown')}</span></td>
+        <td style="font-size: 0.78rem; color: var(--text-muted); white-space: nowrap;">${dateStr}</td>
+        <td>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-sm btn-outline redial-enquiry-btn" title="Redial Call to Farmer">📞 Redial</button>
+            <button class="btn btn-sm btn-outline resolve-enquiry-btn" title="Mark Resolved">✅</button>
+            <button class="btn btn-sm btn-outline delete-enquiry-btn" style="color: #f87171; border-color: rgba(239, 68, 68, 0.3);" title="Delete Enquiry">🗑️</button>
+          </div>
+        </td>
+      `;
+
+      // Redial
+      row.querySelector('.redial-enquiry-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        triggerRedial(item);
+      });
+
+      // Resolve
+      row.querySelector('.resolve-enquiry-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateEnquiryStatus(item.id, 'resolved');
+      });
+
+      // Delete
+      row.querySelector('.delete-enquiry-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteEnquiry(item.id);
+      });
+
+      enquiriesTableBody.appendChild(row);
+    });
+  }
+
+  async function updateEnquiryStatus(enquiryId, newStatus) {
+    try {
+      const res = await fetch(`/api/admin/enquiries/${enquiryId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(`✅ Enquiry marked as ${newStatus}`, 'success');
+        fetchEnquiries();
+      } else {
+        showToast(`❌ Update failed: ${data.detail || 'Error'}`, 'error');
+      }
+    } catch (err) {
+      showToast(`❌ Error: ${err.message}`, 'error');
+    }
+  }
+
+  async function deleteEnquiry(enquiryId) {
+    if (!confirm(`Are you sure you want to delete Enquiry #${enquiryId}?`)) return;
+    try {
+      const res = await fetch(`/api/admin/enquiries/${enquiryId}`, {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(`✅ Enquiry #${enquiryId} deleted`, 'success');
+        fetchEnquiries();
+      } else {
+        showToast(`❌ Delete failed: ${data.detail || 'Error'}`, 'error');
+      }
+    } catch (err) {
+      showToast(`❌ Error: ${err.message}`, 'error');
+    }
+  }
+
+  async function triggerRedial(item) {
+    const agents = dashboardData?.agents?.list || [];
+    const activeAgent = agents.find(a => a.status === 'active') || agents[0];
+    const agentId = activeAgent?.id || 1028;
+
+    showToast(`Initiating redial to ${item.farmer_name || 'Farmer'} (${item.phone_number})...`, 'info');
+    try {
+      const res = await fetch('/api/admin/calls/outbound', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agentId,
+          toNumber: item.phone_number,
+          farmerName: item.farmer_name || 'Farmer',
+          crop: item.crop || 'Paddy',
+          language: item.language || 'hi-IN',
+          alertMessage: `Follow-up advisory regarding: ${item.issue || 'general agricultural query'}`
+        })
+      });
+      const data = await res.json();
+      if (data.success || data.id || (data.data && data.data.id)) {
+        showToast(`✅ Redial placed successfully! Call ID: #${data.id || data.data?.id}`, 'success');
+        setTimeout(() => {
+          fetchCalls();
+          fetchEnquiries();
+        }, 2000);
+      } else {
+        showToast(`❌ Redial failed: ${data.error || data.details || 'Error'}`, 'error');
+      }
+    } catch (err) {
+      showToast(`❌ Network error: ${err.message}`, 'error');
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>"']/g, m => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[m]);
+  }
+
+  // Initial Load
+  fetchDashboardStatus();
+  fetchCalls();
+  fetchEnquiries();
+  fetchDbStatus();
+  fetchErrorsAndLogs();
+
+  // Auto-refresh every 12 seconds
+  autoRefreshTimer = setInterval(() => {
+    fetchDashboardStatus();
+    fetchCalls();
+    fetchEnquiries();
+    fetchDbStatus();
+    fetchErrorsAndLogs();
+  }, 12000);
+});

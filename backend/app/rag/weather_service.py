@@ -2,6 +2,7 @@ from typing import Dict
 import requests
 import os
 import time
+from app.core.config import settings
 
 
 class WeatherService:
@@ -14,9 +15,9 @@ class WeatherService:
     CACHE_DURATION = 900
 
     @classmethod
-    def get_weather(cls, location: str) -> Dict:
+    def get_weather(cls, location: str = "New Delhi") -> Dict:
 
-        api_key = os.getenv("WEATHER_API_KEY")
+        api_key = settings.WEATHER_API_KEY or os.getenv("WEATHER_API_KEY") or "59595d305ea74112b9c105207261907"
 
         if not api_key:
 
