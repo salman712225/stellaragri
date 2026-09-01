@@ -105,18 +105,12 @@ async def health():
 
 @app.on_event("startup")
 async def startup():
-
-    logger.info(
-        "Starting Stellar Agri Backend..."
-    )
-
-    count = RAGService.ingest_folder(
-        "uploads"
-    )
-
-    logger.info(
-        f"{count} chunks indexed."
-    )
+    logger.info("Starting Stellar Agri Backend...")
+    try:
+        count = RAGService.ingest_folder("uploads")
+        logger.info(f"{count} chunks indexed / available in knowledge base.")
+    except Exception as e:
+        logger.warning(f"Startup document ingestion notice: {e}")
 
 
 @app.on_event("shutdown")

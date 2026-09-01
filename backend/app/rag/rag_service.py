@@ -58,7 +58,12 @@ class RAGService:
         chunks = Indexer.build_chunks(folder_path)
 
         if not chunks:
-            raise ValueError("No valid chunks generated.")
+            existing = ChunkStore.load()
+            if existing:
+                print(f"Using {len(existing)} pre-indexed chunks from storage.")
+                return len(existing)
+            print("No documents in uploads folder and no pre-indexed chunks. Continuing in dynamic advisory mode.")
+            return 0
 
         ChunkStore.save(chunks)
 
