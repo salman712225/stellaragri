@@ -481,6 +481,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const durationStr = call.durationSeconds ? `${call.durationSeconds}s` : '0s';
       const costInr = call.costCents ? `₹${(call.costCents / 100).toFixed(2)}` : '₹0.00';
+      const hasAudio = Boolean(call.recordingUrl || call.audioUrl || call.recording_url || call.audio_url || call.recording);
 
       row.innerHTML = `
         <td style="font-weight: 600;">#${call.id}</td>
@@ -493,9 +494,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         <td style="color: var(--accent-light); font-weight: 600;">${costInr}</td>
         <td style="font-size: 0.75rem; color: var(--text-muted);">${dateStr}</td>
         <td>
-          <button class="btn btn-outline view-transcript-btn" style="padding: 4px 10px; font-size: 0.75rem;">
-            🔍 View Transcript
-          </button>
+          <div style="display: flex; gap: 6px;">
+            ${hasAudio ? `
+            <button class="btn btn-primary play-audio-btn" style="padding: 4px 8px; font-size: 0.75rem;">
+              ▶ Play
+            </button>` : ''}
+            <button class="btn btn-outline view-transcript-btn" style="padding: 4px 10px; font-size: 0.75rem;">
+              🔍 Details
+            </button>
+          </div>
         </td>
       `;
 
@@ -504,57 +511,85 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  function openCallDrawer(call) {
+  async function openCallDrawer(call) {
     if (!drawerOverlay) return;
 
     if (drawerCallId) drawerCallId.innerText = `Call #${call.id} (${call.toNumber || ''})`;
     if (drawerSummary) {
-      drawerSummary.innerText = call.callSummary || 'No AI summary generated for this call.';
+      drawerSummary.innerText = call.callSummary || 'Loading call details...';
     }
     if (drawerEvaluation) {
-      drawerEvaluation.innerText = call.successEvaluation || 'No evaluation recorded.';
+      drawerEvaluation.innerText = call.successEvaluation || 'Evaluation recorded.';
     }
 
-    // Audio recording
-    if (drawerAudioContainer) {
-      if (call.recordingUrl) {
-        drawerAudioContainer.style.display = 'block';
-        drawerAudioPlayer.src = call.recordingUrl;
-      } else {
-        drawerAudioContainer.style.display = 'none';
-        drawerAudioPlayer.src = '';
-      }
+    // Audio recording resolution
+    let audioSrc = call.recordingUrl || call.audioUrl || call.recording_url || call.audio_url || call.stereoRecordingUrl || call.monoRecordingUrl || call.mediaUrl || (typeof call.recording === 'string' ? call.recording : call.recording?.url);
+    if (!audioSrc && call.id) {
+      audioSrc = `/api/admin/calls/${call.id}/audio`;
     }
 
-    // Transcript Thread
-    if (drawerTranscriptThread) {
-      drawerTranscriptThread.innerHTML = '';
-      if (call.transcript && call.transcript.trim()) {
-        const lines = call.transcript.split('\n');
-        lines.forEach(line => {
-          if (!line.trim()) return;
-          const bubble = document.createElement('div');
-          const isAgent = line.toLowerCase().startsWith('agent:') || line.toLowerCase().startsWith('assistant:');
-          bubble.className = `chat-bubble ${isAgent ? 'agent' : 'caller'}`;
-
-          let author = isAgent ? (call.agentName || 'Voice Agent') : 'Farmer / Caller';
-          let text = line.replace(/^(Agent:|Assistant:|Caller:|User:)/i, '').trim();
-
-          bubble.innerHTML = `
-            <div class="bubble-author">${author}</div>
-            <div class="bubble-content">${escapeHtml(text)}</div>
-          `;
-          drawerTranscriptThread.appendChild(bubble);
-        });
-      } else {
-        drawerTranscriptThread.innerHTML = `
-          <div style="text-align: center; color: var(--text-dim); padding: 24px;">
-            No conversation transcript recorded for this session.
-          </div>`;
-      }
+    if (drawerAudioContainer && drawerAudioPlayer) {
+      drawerAudioContainer.style.display = 'block';
+      drawerAudioPlayer.src = audioSrc || '';
+      drawerAudioPlayer.load();
     }
+
+    // Render Transcript Thread
+    renderTranscriptBubbles(call);
 
     drawerOverlay.classList.add('open');
+
+    // Deep fetch specific call details to populate fresh signed audio recording if missing
+    try {
+      const res = await fetch(`/api/admin/calls/${call.id}`);
+      if (res.ok) {
+        const fullCall = await res.json();
+        if (fullCall) {
+          if (drawerSummary && fullCall.callSummary) drawerSummary.innerText = fullCall.callSummary;
+          if (drawerEvaluation && fullCall.successEvaluation) drawerEvaluation.innerText = fullCall.successEvaluation;
+
+          const freshAudio = fullCall.recordingUrl || fullCall.audioUrl || fullCall.recording_url || fullCall.audio_url || fullCall.stereoRecordingUrl || fullCall.monoRecordingUrl || fullCall.mediaUrl || (typeof fullCall.recording === 'string' ? fullCall.recording : fullCall.recording?.url);
+          if (freshAudio && drawerAudioPlayer) {
+            drawerAudioPlayer.src = freshAudio;
+            drawerAudioPlayer.load();
+          }
+
+          if (fullCall.transcript) {
+            renderTranscriptBubbles(fullCall);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Deep call fetch notice:', e);
+    }
+  }
+
+  function renderTranscriptBubbles(call) {
+    if (!drawerTranscriptThread) return;
+    drawerTranscriptThread.innerHTML = '';
+    if (call.transcript && call.transcript.trim()) {
+      const lines = call.transcript.split('\n');
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        const bubble = document.createElement('div');
+        const isAgent = line.toLowerCase().startsWith('agent:') || line.toLowerCase().startsWith('assistant:');
+        bubble.className = `chat-bubble ${isAgent ? 'agent' : 'caller'}`;
+
+        let author = isAgent ? (call.agentName || 'Voice Agent') : 'Farmer / Caller';
+        let text = line.replace(/^(Agent:|Assistant:|Caller:|User:)/i, '').trim();
+
+        bubble.innerHTML = `
+          <div class="bubble-author">${author}</div>
+          <div class="bubble-content">${escapeHtml(text)}</div>
+        `;
+        drawerTranscriptThread.appendChild(bubble);
+      });
+    } else {
+      drawerTranscriptThread.innerHTML = `
+        <div style="text-align: center; color: var(--text-dim); padding: 24px;">
+          No conversation transcript recorded for this session.
+        </div>`;
+    }
   }
 
   function renderErrorsAndTerminal(data) {

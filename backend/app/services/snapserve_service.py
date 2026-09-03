@@ -364,14 +364,24 @@ CONVERSATION & ADVISORY GUIDELINES:
 
         res = await cls.request("GET", path)
         if res.get("success") and isinstance(res.get("data"), list):
-            return res["data"]
+            calls = res["data"]
+            for c in calls:
+                cid = c.get("id")
+                rec = c.get("recordingUrl") or c.get("audioUrl") or c.get("recording")
+                if rec and cid:
+                    c["recordingUrl"] = f"/api/admin/storage/recordings/{cid}"
+            return calls
         return []
 
     @classmethod
     async def get_call(cls, call_id: int) -> Optional[Dict[str, Any]]:
         res = await cls.request("GET", f"/calls/{call_id}")
-        if res.get("success"):
-            return res.get("data")
+        if res.get("success") and res.get("data"):
+            call = res["data"]
+            rec = call.get("recordingUrl") or call.get("audioUrl") or call.get("recording")
+            if rec:
+                call["recordingUrl"] = f"/api/admin/storage/recordings/{call_id}"
+            return call
         return None
 
     @classmethod

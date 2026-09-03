@@ -1,8 +1,11 @@
 from typing import Any, Dict, List, Optional
+import urllib.request
+import urllib.error
 from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 from pydantic import BaseModel
 
+from app.core.config import settings
 from app.services.snapserve_service import SnapServeService
 from app.core.database import Database
 
@@ -100,6 +103,45 @@ async def get_call_detail(call_id: int):
     if not call:
         raise HTTPException(status_code=404, detail="Call record not found.")
     return JSONResponse(content=call)
+
+
+@router.get("/storage/recordings/{call_id}")
+@router.get("/calls/{call_id}/audio")
+async def get_call_audio_stream(call_id: int):
+    """
+    Stream audio recording from SnapServe API with full authentication and range headers.
+    """
+    url = f"{settings.SNAPSERVE_BASE_URL.rstrip('/')}/storage/recordings/{call_id}"
+    req = urllib.request.Request(url, headers=SnapServeService.get_headers())
+    try:
+        resp = urllib.request.urlopen(req, timeout=20)
+        media_type = resp.headers.get("Content-Type", "audio/wav")
+
+        def iter_stream():
+            try:
+                while True:
+                    chunk = resp.read(64 * 1024)
+                    if not chunk:
+                        break
+                    yield chunk
+            finally:
+                resp.close()
+
+        return StreamingResponse(
+            iter_stream(),
+            media_type=media_type,
+            headers={
+                "Accept-Ranges": "bytes",
+                "Cache-Control": "public, max-age=3600",
+                "Content-Disposition": f'inline; filename="call_{call_id}.wav"'
+            }
+        )
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            raise HTTPException(status_code=404, detail="Audio recording not available for this call.")
+        raise HTTPException(status_code=e.code, detail=f"SnapServe audio error: {e.reason}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/calls/outbound")
