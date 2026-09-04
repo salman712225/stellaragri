@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../core/constants.dart';
 import '../core/theme.dart';
 import '../services/api_service.dart';
+import '../widgets/server_settings_dialog.dart';
 import 'admin_dashboard_screen.dart';
 
 class AdminLoginScreen extends StatefulWidget {
@@ -38,11 +40,11 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       _errorMessage = null;
     });
 
-    final success = await ApiService.adminLogin(username, password);
+    final res = await ApiService.adminLogin(username, password);
 
     if (!mounted) return;
 
-    if (success) {
+    if (res['success'] == true) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const AdminDashboardScreen()),
@@ -50,7 +52,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     } else {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Invalid admin credentials. Please try again.';
+        _errorMessage = res['error'] ?? 'Invalid admin credentials. Please try again.';
       });
     }
   }
@@ -60,6 +62,18 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Center Login'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.dns_outlined),
+            tooltip: 'Server Settings (${AppConstants.baseUrl})',
+            onPressed: () async {
+              final changed = await ServerSettingsDialog.show(context);
+              if (changed == true && mounted) {
+                setState(() {});
+              }
+            },
+          ),
+        ],
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -153,22 +167,50 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                 // Error Message
                 if (_errorMessage != null) ...[
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: AppTheme.redAccent.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: AppTheme.redAccent.withOpacity(0.4)),
                     ),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.error_outline, color: AppTheme.redAccent, size: 18),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            _errorMessage!,
-                            style: const TextStyle(color: AppTheme.redAccent, fontSize: 12),
-                          ),
+                        Row(
+                          children: [
+                            const Icon(Icons.error_outline, color: AppTheme.redAccent, size: 18),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: AppTheme.redAccent, fontSize: 12),
+                              ),
+                            ),
+                          ],
                         ),
+                        if (_errorMessage!.toLowerCase().contains('connect') ||
+                            _errorMessage!.toLowerCase().contains('server')) ...[
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton.icon(
+                              style: TextButton.styleFrom(
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              ),
+                              icon: const Icon(Icons.settings_ethernet, size: 14, color: AppTheme.mintAccent),
+                              label: const Text('Configure Server URL', style: TextStyle(fontSize: 11, color: AppTheme.mintAccent)),
+                              onPressed: () async {
+                                final changed = await ServerSettingsDialog.show(context);
+                                if (changed == true && mounted) {
+                                  setState(() {
+                                    _errorMessage = null;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

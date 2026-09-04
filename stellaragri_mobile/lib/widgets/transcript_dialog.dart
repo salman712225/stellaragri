@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/constants.dart';
 import '../core/theme.dart';
 import '../models/admin_models.dart';
 import 'audio_player_widget.dart';
@@ -12,9 +13,9 @@ class TranscriptDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     String? audioUrl = call.recordingUrl;
     if (audioUrl != null && !audioUrl.startsWith('http')) {
-      audioUrl = 'https://stellaragri.site$audioUrl';
+      audioUrl = '${AppConstants.baseUrl}$audioUrl';
     } else if (audioUrl == null || audioUrl.isEmpty) {
-      audioUrl = 'https://stellaragri.site/api/admin/storage/recordings/${call.id}';
+      audioUrl = '${AppConstants.audioRecordingBase}/${call.id}';
     }
 
     final transcriptLines = (call.transcript ?? '')

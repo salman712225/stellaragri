@@ -87,8 +87,38 @@ class ApiService {
     }
   }
 
+  // ── Connection Diagnostics ──
+  static Future<Map<String, dynamic>> testConnection([String? customUrl]) async {
+    final targetUrl = customUrl != null
+        ? (customUrl.endsWith('/') ? '${customUrl}health' : '$customUrl/health')
+        : AppConstants.healthEndpoint;
+    final stopwatch = Stopwatch()..start();
+    try {
+      final response = await http.get(Uri.parse(targetUrl)).timeout(const Duration(seconds: 8));
+      stopwatch.stop();
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'latencyMs': stopwatch.elapsedMilliseconds,
+          'message': 'Connected successfully (${stopwatch.elapsedMilliseconds}ms)',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Server responded with HTTP ${response.statusCode}',
+        };
+      }
+    } catch (e) {
+      stopwatch.stop();
+      return {
+        'success': false,
+        'message': 'Connection failed: $e',
+      };
+    }
+  }
+
   // ── 3. Admin Authentication ──
-  static Future<bool> adminLogin(String username, String password) async {
+  static Future<Map<String, dynamic>> adminLogin(String username, String password) async {
     try {
       final response = await http.post(
         Uri.parse(AppConstants.loginEndpoint),
@@ -99,16 +129,19 @@ class ApiService {
         }),
       ).timeout(const Duration(seconds: 15));
 
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-        if (decoded['success'] == true && decoded['token'] != null) {
-          _adminToken = decoded['token'].toString();
-          return true;
-        }
+      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+      if (response.statusCode == 200 && decoded['success'] == true && decoded['token'] != null) {
+        _adminToken = decoded['token'].toString();
+        return {'success': true, 'token': _adminToken};
+      } else {
+        final msg = decoded['detail'] ?? decoded['message'] ?? 'Invalid username or password.';
+        return {'success': false, 'error': msg.toString()};
       }
-      return false;
     } catch (e) {
-      return false;
+      return {
+        'success': false,
+        'error': 'Cannot connect to backend server at ${AppConstants.baseUrl}.\nPlease verify the backend is running.\nDetails: $e',
+      };
     }
   }
 

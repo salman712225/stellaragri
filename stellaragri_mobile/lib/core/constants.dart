@@ -1,22 +1,34 @@
+import 'package:flutter/foundation.dart';
+
 class AppConstants {
   static const String appName = 'Stellar Agri AI';
   static const String appSubtitle = 'Intelligent Agronomy & Voice Advisory';
   
-  // Production Backend URL
-  static const String baseUrl = 'https://stellaragri.site';
+  // Dynamic Backend Base URL
+  // Android emulator uses 10.0.2.2 to access host machine; Web/Desktop/iOS uses 127.0.0.1
+  static String baseUrl = _defaultBaseUrl();
 
-  // API Endpoints
-  static const String chatEndpoint = '$baseUrl/chat';
-  static const String requestCallEndpoint = '$baseUrl/api/request-call';
-  static const String loginEndpoint = '$baseUrl/api/auth/login';
-  static const String logoutEndpoint = '$baseUrl/api/auth/logout';
-  static const String adminStatusEndpoint = '$baseUrl/api/admin/status';
-  static const String adminAgentsEndpoint = '$baseUrl/api/admin/agents';
-  static const String adminCallsEndpoint = '$baseUrl/api/admin/calls';
-  static const String adminEnquiriesEndpoint = '$baseUrl/api/admin/enquiries';
-  static const String adminErrorsEndpoint = '$baseUrl/api/admin/errors-and-logs';
-  static const String adminOutboundCallEndpoint = '$baseUrl/api/admin/calls/outbound';
-  static const String audioRecordingBase = '$baseUrl/api/admin/storage/recordings';
+  static String _defaultBaseUrl() {
+    if (kIsWeb) return 'http://127.0.0.1:8000';
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:8000';
+    }
+    return 'http://127.0.0.1:8000';
+  }
+
+  // API Endpoints (Dynamic Getters)
+  static String get chatEndpoint => '$baseUrl/chat';
+  static String get requestCallEndpoint => '$baseUrl/api/request-call';
+  static String get loginEndpoint => '$baseUrl/api/auth/login';
+  static String get logoutEndpoint => '$baseUrl/api/auth/logout';
+  static String get adminStatusEndpoint => '$baseUrl/api/admin/status';
+  static String get adminAgentsEndpoint => '$baseUrl/api/admin/agents';
+  static String get adminCallsEndpoint => '$baseUrl/api/admin/calls';
+  static String get adminEnquiriesEndpoint => '$baseUrl/api/admin/enquiries';
+  static String get adminErrorsEndpoint => '$baseUrl/api/admin/errors-and-logs';
+  static String get adminOutboundCallEndpoint => '$baseUrl/api/admin/calls/outbound';
+  static String get audioRecordingBase => '$baseUrl/api/admin/storage/recordings';
+  static String get healthEndpoint => '$baseUrl/health';
 
   // Supported Indic Languages for AI Telephony
   static const List<Map<String, String>> supportedLanguages = [

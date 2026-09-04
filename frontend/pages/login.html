@@ -281,15 +281,26 @@
       const passwordInput = document.getElementById('password');
       const togglePwdBtn = document.getElementById('toggle-pwd');
 
+      function getApiBase() {
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+          if (window.location.port === '8000' || window.location.pathname.startsWith('/login')) {
+            return '';
+          }
+        }
+        return 'http://127.0.0.1:8000';
+      }
+
+      const apiBase = getApiBase();
+
       // Check if already authenticated
       try {
         const token = localStorage.getItem('stellar_admin_token');
         const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const chk = await fetch('/api/auth/me', { headers });
+        const chk = await fetch(`${apiBase}/api/auth/me`, { headers });
         if (chk.ok) {
           const chkData = await chk.json();
           if (chkData.authenticated) {
-            window.location.href = '/admin';
+            window.location.href = apiBase ? `${apiBase}/admin` : '/admin';
             return;
           }
         }
@@ -317,7 +328,7 @@
         const password = passwordInput.value.trim();
 
         try {
-          const res = await fetch('/api/auth/login', {
+          const res = await fetch(`${apiBase}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -330,13 +341,13 @@
             if (data.token) {
               localStorage.setItem('stellar_admin_token', data.token);
             }
-            window.location.href = '/admin';
+            window.location.href = apiBase ? `${apiBase}/admin` : '/admin';
           } else {
             errorBox.textContent = data.detail || data.message || 'Invalid username or password.';
             errorBox.style.display = 'block';
           }
         } catch (err) {
-          errorBox.textContent = 'Network error: ' + err.message;
+          errorBox.textContent = `Network error: Could not reach backend server at ${apiBase || window.location.origin}. Please make sure the backend is running on http://127.0.0.1:8000.`;
           errorBox.style.display = 'block';
         } finally {
           submitBtn.disabled = false;
