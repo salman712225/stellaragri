@@ -4,6 +4,7 @@ import '../core/theme.dart';
 import '../models/advisory_response.dart';
 import '../services/api_service.dart';
 import '../widgets/advice_card.dart';
+import '../widgets/server_settings_dialog.dart';
 import 'about_screen.dart';
 import 'admin_login_screen.dart';
 import 'admin_dashboard_screen.dart';
@@ -132,6 +133,22 @@ class _HomeAdvisoryScreenState extends State<HomeAdvisoryScreen> {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.dns_outlined),
+            tooltip: 'Server Settings (${AppConstants.baseUrl})',
+            onPressed: () async {
+              final changed = await ServerSettingsDialog.show(context);
+              if (changed == true && mounted) {
+                setState(() {});
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Server URL set to: ${AppConstants.baseUrl}'),
+                    backgroundColor: AppTheme.emeraldPrimary,
+                  ),
+                );
+              }
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.info_outline_rounded),
             tooltip: 'About & Datasets',
             onPressed: () {
@@ -149,7 +166,7 @@ class _HomeAdvisoryScreenState extends State<HomeAdvisoryScreen> {
               }
             },
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 4),
         ],
       ),
       body: SingleChildScrollView(
@@ -517,6 +534,11 @@ class _HomeAdvisoryScreenState extends State<HomeAdvisoryScreen> {
   }
 
   Widget _buildErrorState() {
+    final isConnError = _queryError!.toLowerCase().contains('socket') ||
+        _queryError!.toLowerCase().contains('lookup') ||
+        _queryError!.toLowerCase().contains('failed to communicate') ||
+        _queryError!.toLowerCase().contains('connection');
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -524,16 +546,56 @@ class _HomeAdvisoryScreenState extends State<HomeAdvisoryScreen> {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppTheme.redAccent.withOpacity(0.4)),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.error_outline, color: AppTheme.redAccent),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              _queryError!,
-              style: const TextStyle(color: AppTheme.redAccent, fontSize: 13),
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.error_outline, color: AppTheme.redAccent),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _queryError!,
+                  style: const TextStyle(color: AppTheme.redAccent, fontSize: 13),
+                ),
+              ),
+            ],
           ),
+          if (isConnError) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppTheme.surfaceDark,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline, size: 16, color: AppTheme.mintAccent),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Target URL: ${AppConstants.baseUrl}\nMake sure your backend is running.',
+                      style: const TextStyle(fontSize: 11, color: AppTheme.textMuted),
+                    ),
+                  ),
+                  TextButton.icon(
+                    icon: const Icon(Icons.settings, size: 14, color: AppTheme.mintAccent),
+                    label: const Text('Change URL', style: TextStyle(fontSize: 12, color: AppTheme.mintAccent)),
+                    onPressed: () async {
+                      final changed = await ServerSettingsDialog.show(context);
+                      if (changed == true && mounted) {
+                        setState(() {
+                          _queryError = null;
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

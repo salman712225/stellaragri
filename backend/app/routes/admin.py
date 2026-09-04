@@ -133,6 +133,9 @@ async def get_call_audio_stream(call_id: int):
             headers={
                 "Accept-Ranges": "bytes",
                 "Cache-Control": "public, max-age=3600",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, OPTIONS",
+                "Access-Control-Allow-Headers": "*",
                 "Content-Disposition": f'inline; filename="call_{call_id}.wav"'
             }
         )

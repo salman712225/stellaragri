@@ -128,3 +128,9 @@ app.include_router(
 app.include_router(
     admin_router
 )
+
+
+@app.get("/api/storage/recordings/{call_id}")
+async def global_call_recording_stream(call_id: int):
+    from app.routes.admin import get_call_audio_stream
+    return await get_call_audio_stream(call_id)

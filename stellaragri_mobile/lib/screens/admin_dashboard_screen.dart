@@ -3,6 +3,7 @@ import '../core/constants.dart';
 import '../core/theme.dart';
 import '../models/admin_models.dart';
 import '../services/api_service.dart';
+import '../widgets/server_settings_dialog.dart';
 import '../widgets/transcript_dialog.dart';
 import 'home_advisory_screen.dart';
 
@@ -143,6 +144,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
       appBar: AppBar(
         title: const Text('Admin Operations Center'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.dns_outlined),
+            tooltip: 'Server Settings (${AppConstants.baseUrl})',
+            onPressed: () async {
+              final changed = await ServerSettingsDialog.show(context);
+              if (changed == true && mounted) {
+                _refreshAllData();
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
             tooltip: 'Refresh Data',
