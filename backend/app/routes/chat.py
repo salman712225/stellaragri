@@ -39,9 +39,17 @@ async def chat(
             content={"error": "Question parameter or JSON payload is required."}
         )
 
-    response = await ChatService.answer(q)
-
-    return JSONResponse(content=response)
+    try:
+        response = await ChatService.answer(q)
+        return JSONResponse(content=response)
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "Failed to process agronomy advisory query.",
+                "detail": str(e)
+            }
+        )
 
 
 @router.post("/api/request-call")

@@ -4,17 +4,20 @@
 
 class ApiService {
     static async sendQuery(question) {
-        const endpoints = [
-            '/chat',
-            'http://127.0.0.1:8000/chat',
-            'http://localhost:8000/chat'
-        ];
+        const isHosted = typeof window !== 'undefined' && 
+                         window.location.protocol.startsWith('http') && 
+                         window.location.hostname !== 'localhost' && 
+                         window.location.hostname !== '127.0.0.1';
+
+        const endpoints = isHosted 
+            ? ['/chat'] 
+            : ['/chat', 'http://127.0.0.1:8000/chat', 'http://localhost:8000/chat'];
 
         let lastError = null;
 
         for (const endpoint of endpoints) {
             try {
-                // Try JSON body POST first
+                // 1. Try JSON body POST first
                 let response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
@@ -28,7 +31,20 @@ class ApiService {
                     return await response.json();
                 }
 
-                // Fallback to query param POST
+                // If non-ok response, attempt to extract error detail from server
+                let errorDetail = null;
+                try {
+                    const errData = await response.json();
+                    errorDetail = errData.error || errData.detail || errData.message;
+                } catch (_) {}
+
+                if (response.status >= 400 && response.status < 600) {
+                    if (isHosted) {
+                        throw new Error(errorDetail || `Server error (${response.status}) while generating advice.`);
+                    }
+                }
+
+                // Fallback to query param POST (for local testing)
                 const queryUrl = `${endpoint}?question=${encodeURIComponent(question)}`;
                 response = await fetch(queryUrl, {
                     method: 'POST',
@@ -41,9 +57,13 @@ class ApiService {
             } catch (err) {
                 lastError = err;
                 console.warn(`Attempt failed for endpoint ${endpoint}:`, err);
+                if (isHosted) {
+                    throw err;
+                }
             }
         }
 
-        throw lastError || new Error('Failed to connect to backend server on http://127.0.0.1:8000');
+        throw lastError || new Error('Failed to connect to backend server. Please verify network connection.');
     }
 }
+

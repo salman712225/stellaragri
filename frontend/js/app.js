@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // UI State: Success Render
             UIRenderer.renderResponse(responseData);
         } catch (error) {
-            alert(`Error communicating with Stellar Agri AI backend: ${error.message}\n\nPlease ensure the backend server is running on http://localhost:8000.`);
+            alert(`Stellar Agri AI Notice: ${error.message || 'Unable to connect to advisory service. Please check your connection.'}`);
         } finally {
             sendBtn.disabled = false;
             loader.classList.add('hidden');
