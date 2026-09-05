@@ -105,6 +105,74 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 5. Instant Insurance Call Enquiry Form Handler
+    const insuranceForm = document.getElementById('insurance-enquiry-form');
+    const insuranceCallBtn = document.getElementById('insurance-call-now-btn');
+    const insuranceStatusBox = document.getElementById('insurance-call-status-box');
+    const insuranceStatusTitle = document.getElementById('insurance-call-status-title');
+    const insuranceStatusDesc = document.getElementById('insurance-call-status-desc');
+
+    if (insuranceForm) {
+        insuranceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const farmerName = document.getElementById('insurance-enquiry-name').value.trim();
+            const phone = document.getElementById('insurance-enquiry-phone').value.trim();
+            const location = document.getElementById('insurance-enquiry-location').value.trim();
+            const lang = document.getElementById('insurance-enquiry-lang').value || 'hi-IN';
+            const disaster = document.getElementById('insurance-enquiry-disaster').value.trim() || 'Crop damage / PMFBY claim intimation';
+
+            if (!phone) {
+                alert('Please enter your mobile phone number.');
+                return;
+            }
+
+            if (!location) {
+                alert('Please enter your location (District / Village / State).');
+                return;
+            }
+
+            // UI State: Calling
+            insuranceCallBtn.disabled = true;
+            insuranceCallBtn.innerHTML = '<span>⏳ Verifying & Connecting...</span>';
+            insuranceStatusBox.classList.remove('hidden');
+            insuranceStatusTitle.innerText = `Calling ${phone}...`;
+            insuranceStatusDesc.innerText = `Cross-verifying meteorological records for ${location} and connecting with AI Claims Specialist (Agent #1028)...`;
+
+            try {
+                const requestUrl = window.location.origin.startsWith('http') ? '/api/insurance-request-call' : 'http://127.0.0.1:8000/api/insurance-request-call';
+                const res = await fetch(requestUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        farmer_name: farmerName,
+                        phone_number: phone,
+                        location: location,
+                        language: lang,
+                        disaster_type: disaster
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && (data.success || data.call_id)) {
+                    const score = Math.round((data.plausibility_score || 0.9) * 100);
+                    insuranceStatusTitle.innerText = `🛡️ Call Active (Claim Docket #${data.claim_id || 'Logged'})`;
+                    insuranceStatusDesc.innerText = `Incident verified (${score}% Plausibility). Please answer the incoming call from +918071581407 to complete your PMFBY claim intimation!`;
+                } else {
+                    insuranceStatusTitle.innerText = `❌ Notice`;
+                    insuranceStatusDesc.innerText = data.error || 'Could not initiate insurance call. Please check your number.';
+                }
+            } catch (err) {
+                insuranceStatusTitle.innerText = `❌ Connection Error`;
+                insuranceStatusDesc.innerText = `Failed to connect to backend: ${err.message}`;
+            } finally {
+                insuranceCallBtn.disabled = false;
+                insuranceCallBtn.innerHTML = '<span class="call-icon">📲</span><span>Call Me Immediately</span>';
+            }
+        });
+    }
+
     // Main Query Execution Flow
     async function processQuery(query) {
         // UI State: Loading

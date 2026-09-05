@@ -129,71 +129,81 @@ class SnapServeService:
             "name": "Hindi",
             "asrLanguage": "hi-IN",
             "greeting_template": "Namaste {farmer_name}! Main Stellar Agri AI se bol raha hoon. Aapne {crop} fasal ke baare mein advisory maangi thi. Main aapki kya madad kar sakta hoon?",
-            "default_greeting": "Namaste! Main Stellar Agri AI se bol raha hoon. Fasal, beemari, khad ya mandi bhav se judi kya madad chahiye aapko?",
-            "language_instruction": "You MUST converse strictly in polite, natural Hindi (हिंदी). Use standard Indian farming terms (Khad, Urea, DAP, Fasal, Mandi, Keetnashak)."
+            "insurance_greeting_template": "Namaste {farmer_name}! Main Stellar Agri AI Crop Insurance Advisor bol raha hoon. Aapne {location} kshetra mein fasal nuksan ya PMFBY bima claim intimation ke baare mein request kiya tha. Main aapki claim intimation mein madad kar sakta hoon.",
+            "default_greeting": "Namaste! Main Stellar Agri AI se bol raha hoon. Fasal, beemari, khad, ya PMFBY fasal bima claim se judi kya madad chahiye aapko?",
+            "language_instruction": "You MUST converse strictly in polite, natural Hindi (हिंदी). Use standard Indian farming terms (Khad, Urea, DAP, Fasal, Mandi, Bima, Khasra, Patta)."
         },
         "ta-IN": {
             "name": "Tamil",
             "asrLanguage": "ta-IN",
             "greeting_template": "Vanakkam {farmer_name}! Naan Stellar Agri AI vivasaya aalochagar pesugiren. Ungaludaiya {crop} payir pathiya vivaram eppadi udhava mudiyum?",
-            "default_greeting": "Vanakkam! Naan Stellar Agri AI vivasaya aalochagar. Ungalukku payir, uram, nooi kattuppaadu matriya vivaram thevaiya?",
-            "language_instruction": "You MUST converse strictly in polite, natural Tamil (தமிழ்). Use familiar farming terms (Payir, Uram, Nooi, Mandi, Pasumai)."
+            "insurance_greeting_template": "Vanakkam {farmer_name}! Naan Stellar Agri AI vivasaya bima aalochagar. {location} la ungalukku aana payir sedhaara PMFBY claim intimation pathi pesalaama?",
+            "default_greeting": "Vanakkam! Naan Stellar Agri AI vivasaya aalochagar. Ungalukku payir, uram, nooi kattuppaadu matrum PMFBY bima claim pathiya vivaram thevaiya?",
+            "language_instruction": "You MUST converse strictly in polite, natural Tamil (தமிழ்). Use familiar farming terms (Payir, Uram, Nooi, Mandi, Patta, Chitta, Bima)."
         },
         "te-IN": {
             "name": "Telugu",
             "asrLanguage": "te-IN",
             "greeting_template": "Namaskaram {farmer_name} garu! Nenu Stellar Agri AI vyavasaya salahadarunini. Mee {crop} panta gurinchi emaina sahayam kaavala?",
-            "default_greeting": "Namaskaram! Nenu Stellar Agri AI vyavasaya salahadarunini. Panta, eruuvulu, thegullu mariyu mandi dharala gurinchi emaina sahayam kaavala?",
-            "language_instruction": "You MUST converse strictly in polite, natural Telugu (తెలుగు). Use familiar agriculture terms (Panta, Eruuvulu, Thegullu, Mandi)."
+            "insurance_greeting_template": "Namaskaram {farmer_name} garu! Nenu Stellar Agri AI bima salahadarunini. {location} lo panta nashtam mariyu PMFBY bima claim intimation gurinchi maatladuthunnanu.",
+            "default_greeting": "Namaskaram! Nenu Stellar Agri AI vyavasaya salahadarunini. Panta, thegullu mariyu PMFBY panta bima claim gurinchi emaina sahayam kaavala?",
+            "language_instruction": "You MUST converse strictly in polite, natural Telugu (తెలుగు). Use familiar agriculture terms (Panta, Eruuvulu, Thegullu, Bima, Adangal, Pahani)."
         },
         "kn-IN": {
             "name": "Kannada",
             "asrLanguage": "kn-IN",
             "greeting_template": "Namaskara {farmer_name}! Naanu Stellar Agri AI krushi salahagara mathaduthidene. Nimma {crop} beleya bagge yava sahaya beku?",
-            "default_greeting": "Namaskara! Naanu Stellar Agri AI krushi salahagara mathaduthidene. Bele, gobbarada mahiti athava roga niyantrana bagge yava sahaya beku?",
-            "language_instruction": "You MUST converse strictly in polite, natural Kannada (ಕನ್ನಡ). Use familiar farming terms (Bele, Gobbara, Roga, Mandi)."
+            "insurance_greeting_template": "Namaskara {farmer_name}! Naanu Stellar Agri AI bima salahagara. {location} nalli bele hani mathu PMFBY bima claim bagge mathaduthidene.",
+            "default_greeting": "Namaskara! Naanu Stellar Agri AI krushi salahagara mathaduthidene. Bele, roga niyantrana athava PMFBY bima claim bagge yava sahaya beku?",
+            "language_instruction": "You MUST converse strictly in polite, natural Kannada (ಕನ್ನಡ). Use familiar farming terms (Bele, Gobbara, Roga, Bima, RTC, Pahani)."
         },
         "mr-IN": {
             "name": "Marathi",
             "asrLanguage": "mr-IN",
             "greeting_template": "Namaskar {farmer_name}! Mi Stellar Agri AI krushi sallyagar bolat ahe. Aplya {crop} pikababt kay madat havi ahe?",
-            "default_greeting": "Namaskar! Mi Stellar Agri AI madhun bolat ahe. Pik, khati, rog kiva bajarbhavababt kai madat havi ahe?",
-            "language_instruction": "You MUST converse strictly in polite, natural Marathi (मराठी). Use familiar agricultural vocabulary (Pik, Khat, Rog, Bajarbhav)."
+            "insurance_greeting_template": "Namaskar {farmer_name}! Mi Stellar Agri AI peak vima sallyagar bolat ahe. {location} madhil pik nuksan v PMFBY claim intimation babat aplyala madat karu shakto.",
+            "default_greeting": "Namaskar! Mi Stellar Agri AI madhun bolat ahe. Pik, khati, rog kiva PMFBY peak vima claim babat kai madat havi ahe?",
+            "language_instruction": "You MUST converse strictly in polite, natural Marathi (मराठी). Use familiar agricultural vocabulary (Pik, Khat, Rog, 7/12 Extract, Peak Vima)."
         },
         "bn-IN": {
             "name": "Bengali",
             "asrLanguage": "bn-IN",
             "greeting_template": "Nomoshkar {farmer_name}! Aami Stellar Agri AI krishi poramorshok bolchi. Aaponar {crop} chash niye ki shahajjo korte pari?",
-            "default_greeting": "Nomoshkar! Aami Stellar Agri AI theke bolchi. Fasol, shar, rog ba bajar dor niye ki shahajjo lagbe?",
-            "language_instruction": "You MUST converse strictly in polite, natural Bengali (বাংলা). Use familiar farming terms (Fasol, Shar, Rog, Mandi)."
+            "insurance_greeting_template": "Nomoshkar {farmer_name}! Aami Stellar Agri AI theke bolchi. {location} e fasol khotikriti o PMFBY bima claim intimation niye kotha bolte pari.",
+            "default_greeting": "Nomoshkar! Aami Stellar Agri AI theke bolchi. Fasol, shar, rog ba PMFBY fasol bima claim niye ki shahajjo lagbe?",
+            "language_instruction": "You MUST converse strictly in polite, natural Bengali (বাংলা). Use familiar farming terms (Fasol, Shar, Rog, Bima, Khatian)."
         },
         "gu-IN": {
             "name": "Gujarati",
             "asrLanguage": "gu-IN",
             "greeting_template": "Namaste {farmer_name}! Hu Stellar Agri AI krushi salahkar bolu chu. Tamara {crop} pak maate shu madat joiye che?",
-            "default_greeting": "Namaste! Hu Stellar Agri AI mathi bolu chu. Pak, khatar, rog niyantran ke mandi bhav mate shu mahiti joiye che?",
-            "language_instruction": "You MUST converse strictly in polite, natural Gujarati (ગુજરાતી). Use familiar farming terms (Pak, Khatar, Rog, Mandi bhav)."
+            "insurance_greeting_template": "Namaste {farmer_name}! Hu Stellar Agri AI pak vima salahkar chu. {location} ma pak nuksan ane PMFBY claim intimation maate madat kari shaku chu.",
+            "default_greeting": "Namaste! Hu Stellar Agri AI mathi bolu chu. Pak, khatar, rog niyantran ke PMFBY pak vima claim mate shu mahiti joiye che?",
+            "language_instruction": "You MUST converse strictly in polite, natural Gujarati (ગુજરાતી). Use familiar farming terms (Pak, Khatar, Rog, 7/12, Pak Vima)."
         },
         "pa-IN": {
             "name": "Punjabi",
             "asrLanguage": "pa-IN",
             "greeting_template": "Sat Sri Akal {farmer_name} ji! Main Stellar Agri AI kheti salahkar bol reha haan. Tuhadi {crop} di fasal baare ki madad chaahidi hai?",
-            "default_greeting": "Sat Sri Akal! Main Stellar Agri AI walon bol reha haan. Fasal, khaad, beemari ya mandi bhav baare ki jankari chahidi hai?",
-            "language_instruction": "You MUST converse strictly in polite, natural Punjabi (ਪੰਜਾਬੀ). Use familiar farming terms (Fasal, Khaad, Beemari, Mandi)."
+            "insurance_greeting_template": "Sat Sri Akal {farmer_name} ji! Main Stellar Agri AI fasal bima salahkar bol reha haan. {location} ch nuksan te PMFBY bima claim intimation baare madad kar sakda haan.",
+            "default_greeting": "Sat Sri Akal! Main Stellar Agri AI walon bol reha haan. Fasal, khaad, beemari ya PMFBY fasal bima claim baare ki jankari chahidi hai?",
+            "language_instruction": "You MUST converse strictly in polite, natural Punjabi (ਪੰਜਾਬੀ). Use familiar farming terms (Fasal, Khaad, Beemari, Fard, Bima)."
         },
         "ml-IN": {
             "name": "Malayalam",
             "asrLanguage": "ml-IN",
             "greeting_template": "Namaskaram {farmer_name}! Njan Stellar Agri AI krishi aalochakan samsarikunnu. Ningalude {crop} krishiyil enthu sahayamanu vendathu?",
-            "default_greeting": "Namaskaram! Njan Stellar Agri AI il ninnu samsarikunnu. Krishi, valaprayogam, roganiyanthranam ennivaye kurichu enthu ariyannam?",
-            "language_instruction": "You MUST converse strictly in polite, natural Malayalam (മലയാളം). Use familiar farming vocabulary (Krishi, Valam, Rogam, Mandi)."
+            "insurance_greeting_template": "Namaskaram {farmer_name}! Njan Stellar Agri AI crop insurance salahakan samsarikunnu. {location} le krishi nashtam, PMFBY claim intimation sambandhichu sahayam cheyyam.",
+            "default_greeting": "Namaskaram! Njan Stellar Agri AI il ninnu samsarikunnu. Krishi, valaprayogam, athava PMFBY crop insurance claim ennivaye kurichu enthu ariyannam?",
+            "language_instruction": "You MUST converse strictly in polite, natural Malayalam (മലയാളം). Use familiar farming vocabulary (Krishi, Valam, Rogam, Bima, Pattayam)."
         },
         "en-IN": {
             "name": "English",
             "asrLanguage": "en-IN",
             "greeting_template": "Hello {farmer_name}! I am your Stellar Agri AI agricultural assistant. I am calling regarding your {crop} query. How may I help you today?",
-            "default_greeting": "Hello! I am your Stellar Agri AI agricultural assistant. How can I help you with your crop, fertilizer, pest diagnosis, or mandi prices today?",
-            "language_instruction": "You MUST converse in clear, courteous Indian English. Provide direct, practical agricultural advice on crops, fertilizers, pest control, and mandi prices."
+            "insurance_greeting_template": "Hello {farmer_name}! I am your Stellar Agri AI Crop Insurance Advisor calling regarding crop loss in {location}. How can I assist with your PMFBY claim intimation today?",
+            "default_greeting": "Hello! I am your Stellar Agri AI assistant. How can I help you with crop advice, weather warnings, or PMFBY crop insurance claims today?",
+            "language_instruction": "You MUST converse in clear, courteous Indian English. Provide direct, practical agricultural advice and official PMFBY crop insurance claim guidance."
         }
     }
 
@@ -233,19 +243,22 @@ class SnapServeService:
         language: str = "hi-IN",
         farmer_name: str = "Farmer",
         crop: str = "Paddy",
-        issue: Optional[str] = None
+        issue: Optional[str] = None,
+        location: Optional[str] = None,
+        is_insurance_claim: bool = False
     ) -> bool:
         """
         Dynamically configure the agent's language, ASR acoustic model,
-        personalized opening greeting, and language-specific instructions with live weather & mandi prices before placing a call.
+        personalized opening greeting, and PMFBY insurance/agronomy instructions with live weather telemetry.
         """
         lang_key = language if language in cls.LANGUAGE_CONFIGS else "hi-IN"
         config = cls.LANGUAGE_CONFIGS[lang_key]
 
         # ── 1. Fetch Real-Time Weather Telemetry ──
+        loc_str = location or "Cuddalore"
         weather_info = "Weather telemetry: Normal agricultural temperature (28°C to 34°C), stable humidity, moderate conditions."
         try:
-            w = WeatherService.get_weather(location="New Delhi")
+            w = WeatherService.get_weather(location=loc_str)
             if w.get("status") == "success":
                 temp = w.get("temperature", 30)
                 feels = w.get("feels_like", temp)
@@ -257,7 +270,7 @@ class SnapServeService:
                 fungal = agri.get("fungal_risk", "Low")
                 heat = "High heat stress warning" if agri.get("heat_stress") else "Normal temperature range"
                 weather_info = (
-                    f"- Current Weather: {temp}°C (Feels like {feels}°C), Sky: {cond}\n"
+                    f"- Current Weather in {loc_str}: {temp}°C (Feels like {feels}°C), Sky: {cond}\n"
                     f"- Humidity: {hum}%, Probability of Rain: {rain_prob}%\n"
                     f"- Agronomy Alert: {irr}. Fungal disease risk is {fungal}. {heat}."
                 )
@@ -283,28 +296,35 @@ class SnapServeService:
         except Exception as e:
             logger.warning(f"Could not fetch live market prices for agent prompt: {e}")
 
-        # Generate personalized opening greeting in selected language with crop & problem context
+        # Generate personalized opening greeting in selected language
         has_name = farmer_name and farmer_name.strip() and farmer_name.strip().lower() not in ["farmer", "kisan", "vivasayi"]
         name_str = farmer_name.strip() if has_name else ("Farmer" if lang_key == "en-IN" else "Kisan Bhai")
         crop_str = crop.strip() if crop and crop.strip() else "crop"
         issue_str = issue.strip() if issue and issue.strip() else ""
+        location_str = (location or "your village / district").strip()
 
-        if has_name:
+        if is_insurance_claim:
+            greeting = config.get("insurance_greeting_template", config["greeting_template"]).format(
+                farmer_name=name_str, location=location_str, crop=crop_str
+            )
+        elif has_name:
             greeting = config["greeting_template"].format(farmer_name=name_str, crop=crop_str)
         else:
             greeting = config["default_greeting"]
 
-        # Build specialized system prompt tailored for the farmer & selected language
-        prompt = f"""You are Stellar Agri AI, an expert agricultural scientist, agronomist, crop doctor, and farming consultant.
+        # Build specialized system prompt tailored for the farmer & selected language with Voistle Conversational Flow
+        prompt = f"""You are Stellar Agri AI, an expert agricultural scientist and certified PMFBY (Pradhan Mantri Fasal Bima Yojana) crop insurance claims specialist.
 
 CRITICAL LANGUAGE REQUIREMENT:
 {config["language_instruction"]}
 The caller specifically requested advisory in {config["name"]}. You MUST converse and answer exclusively in {config["name"]}.
 
-CALLER CONTEXT (FROM WEB/APP REQUEST):
+CALLER CONTEXT:
 - Farmer Name: {name_str}
-- Target Crop: {crop_str}
-- Farmer's Question / Reported Issue: {issue_str or 'General agronomy, fertilizer dosage, disease remedy, or mandi rate inquiry'}
+- Location: {location_str}
+- Crop: {crop_str}
+- Reported Query / Disaster: {issue_str or 'PMFBY Crop Loss Intimation & Disaster Assessment'}
+- Is Insurance Flow: {'YES (PMFBY Claim Intake)' if is_insurance_claim else 'Standard Agronomy & Insurance Enabled'}
 
 LIVE REAL-TIME AGRI TELEMETRY & MARKET PRICES:
 [LIVE WEATHER FORECAST]
@@ -313,22 +333,33 @@ LIVE REAL-TIME AGRI TELEMETRY & MARKET PRICES:
 [LIVE APMC MANDI COMMODITY PRICES]
 {market_info}
 
-VOICE CALL WORKFLOW & INTERACTION RULES:
-1. FIRST TURN / OPENING:
-   - Greet the farmer warmly by name ({name_str}).
-   - Briefly confirm their crop ({crop_str}) and their specific query: "{issue_str or 'farming advice'}".
-   - Immediately provide the primary diagnosis and actionable solution (exact fertilizer dosage, pesticide spray, or soil practice).
-2. ACTIVE LISTENING & FULL-DUPLEX DIALOGUE:
-   - When the farmer speaks, listen carefully to their explanation, questions, or doubts.
-   - Do NOT rush or speak over the farmer.
-   - Answer their specific follow-up questions directly using verified agronomy knowledge.
-3. MANDI PRICES & BENCHMARKS:
-   - If asked about mandi price, selling time, or market rates, quote the live APMC modal price ({market_info.splitlines()[1] if len(market_info.splitlines()) > 1 else 'latest benchmark price'}) and price range per quintal.
-4. WEATHER & SPRAY PRECAUTIONS:
-   - Warn about rain probability or high temperature before recommending foliar fertilizer or chemical sprays.
-5. STYLE:
-   - Keep answers natural, spoken, and concise (1 to 3 short sentences per turn).
-   - Use respectful, encouraging, farmer-friendly terms (Urea, DAP, NPK, Neem oil, Mandi bhav).
+VOISTLE PMFBY CROP INSURANCE CORE CONVERSATIONAL FLOW:
+When handling a crop loss/insurance query, follow this strict step-by-step intake protocol:
+1. EMPATHETIC LOSS INTAKE: Greet warmly, acknowledge the loss empathetically (*"I am sorry to hear about the crop loss in {location_str}."*).
+2. 72-HOUR INTIMATION WINDOW VERIFICATION:
+   - Ask when the loss occurred (Day/Date).
+   - Under PMFBY operational guidelines, loss intimation is MANDATORY within 72 hours of the event. Confirm if it is within 72 hours.
+3. LOSS DETAILS & LOCATION:
+   - Ask for the affected crop ({crop_str}), village/Mandal, and approximate acres affected (e.g. 2 acres, 5 acres).
+4. REQUIRED 5 DOCUMENTS CHECKLIST:
+   - Explicitly inform the caller of the 5 mandatory documents required:
+     a. Land Record (7/12 Extract / Patta-Chitta / Khasra / Adangal)
+     b. Sowing Certificate (VAO / Panchayat certificate)
+     c. Bank Passbook Copy (Aadhaar linked)
+     d. Aadhaar Card
+     e. Geo-tagged Photos of damaged field (taken with GPS on phone)
+5. STRICT ANTI-OVERPROMISING GUARDRAIL (GATE CRITERIA):
+   - NEVER promise, guarantee, or estimate claim approval, payout amounts (₹), or payment dates.
+   - If asked "Will I get money?", state clearly:
+     *"Under PMFBY rules, claim compensation is determined exclusively post joint physical survey by the insurance loss assessor and state agriculture officer. Your docket has been registered for surveyor assessment."*
+6. ANOMALY / MISMATCH ESCALATION:
+   - If telemetry shows contradictory weather, do not accuse the farmer of fraud. State that Mandal telemetry is attached and file is routed to senior officer for on-field check.
+7. DISTRESS DE-ESCALATION:
+   - If caller is distressed or weeping, express immediate comfort and confirm escalation to senior agricultural officer.
+
+GENERAL AGRONOMY RULES (FOR CROP/FERTILIZER/PEST QUERIES):
+- Keep answers spoken, practical, and short (1-3 sentences per turn).
+- Ask 1 question at a time to prevent cognitive overload.
 """
 
         patch_payload = {
@@ -339,7 +370,7 @@ VOICE CALL WORKFLOW & INTERACTION RULES:
             "status": "active"
         }
 
-        logger.info(f"🌐 Configuring Agent #{agent_id} for Language '{config['name']}' ({lang_key}) with live weather & mandi data. Greeting: '{greeting}'")
+        logger.info(f"🌐 Configuring Agent #{agent_id} for Language '{config['name']}' ({lang_key}) with Voistle PMFBY flow. Greeting: '{greeting}'")
         res = await cls.update_agent(agent_id, patch_payload)
         return res.get("success", False)
 

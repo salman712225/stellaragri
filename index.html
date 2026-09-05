@@ -163,6 +163,73 @@
                 </div>
             </section>
 
+            <!-- Instant Phone Call Insurance Advisory Section -->
+            <section class="call-enquiry-card insurance-card" style="border: 1px solid rgba(59, 130, 246, 0.4); background: linear-gradient(135deg, rgba(30, 58, 138, 0.22) 0%, rgba(17, 24, 39, 0.85) 100%); margin-top: 24px;">
+                <div class="enquiry-badge" style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.45);">🛡️ 📞 Instant AI Voice Insurance Advisory Call</div>
+                <div class="enquiry-header">
+                    <h3>Report Crop Loss & PMFBY Insurance Claim via Voice Call</h3>
+                    <p>Have your crops suffered damage from flood, cyclone, drought, or hailstorm? Our Voice AI Insurance Specialist will call your mobile immediately to cross-verify the incident, check the 72-hour intimation window, and guide your claim docket!</p>
+                </div>
+
+                <form id="insurance-enquiry-form" class="enquiry-form">
+                    <div class="enquiry-grid">
+                        <div class="form-field">
+                            <label for="insurance-enquiry-name">Your Name</label>
+                            <input type="text" id="insurance-enquiry-name" placeholder="e.g. Ramesh Kumar" required>
+                        </div>
+                        
+                        <div class="form-field">
+                            <label for="insurance-enquiry-phone">Mobile Number</label>
+                            <input type="tel" id="insurance-enquiry-phone" placeholder="e.g. 9876543210 or +91..." required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="insurance-enquiry-location">Location (District / Village / State)</label>
+                            <input type="text" id="insurance-enquiry-location" placeholder="e.g. Cuddalore, Tamil Nadu" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="insurance-enquiry-lang">Preferred Language</label>
+                            <select id="insurance-enquiry-lang">
+                                <option value="hi-IN" selected>Hindi (हिंदी)</option>
+                                <option value="en-IN">English (Indian)</option>
+                                <option value="ta-IN">Tamil (தமிழ்)</option>
+                                <option value="te-IN">Telugu (తెలుగు)</option>
+                                <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+                                <option value="mr-IN">Marathi (मराठी)</option>
+                                <option value="bn-IN">Bengali (বাংলা)</option>
+                                <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+                                <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
+                                <option value="ml-IN">Malayalam (മലയാളം)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-field full-width">
+                        <label for="insurance-enquiry-disaster">Disaster / Nature of Damage (Optional)</label>
+                        <input type="text" id="insurance-enquiry-disaster" placeholder="e.g. Cyclone Michaung Inundation / Drought / Hailstorm damage to Standing Paddy...">
+                    </div>
+
+                    <div class="enquiry-submit-row">
+                        <button type="submit" id="insurance-call-now-btn" class="call-now-btn" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
+                            <span class="call-icon">📲</span>
+                            <span>Call Me Immediately</span>
+                        </button>
+                        <span class="call-note">⚡ Automated PMFBY insurance claims & disaster verification call from active hotline: <strong>+918071581407</strong></span>
+                    </div>
+                </form>
+
+                <div id="insurance-call-status-box" class="call-status-box hidden">
+                    <div class="call-status-content">
+                        <span class="calling-animation-pulse" style="border-color: #3b82f6;"></span>
+                        <div class="calling-text">
+                            <h4 id="insurance-call-status-title">Initiating PMFBY Voice Call...</h4>
+                            <p id="insurance-call-status-desc">Connecting with AI Claims Specialist (Agent #1028). Your phone will ring in a few moments!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Loading Spinner -->
             <div id="loader" class="loader-container hidden">
                 <div class="spinner"></div>
