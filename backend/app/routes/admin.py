@@ -428,3 +428,35 @@ async def update_claim_status(claim_id: str, payload: ClaimStatusUpdateRequest):
     if not success:
         raise HTTPException(status_code=404, detail="Claim record not found.")
     return {"success": True, "message": "Claim status updated."}
+
+
+# ── Proactive Hazard Detection & Outreach Endpoints ──
+
+class TriggerHazardCampaignRequest(BaseModel):
+    district: str
+    phone_numbers: Optional[List[str]] = None
+    custom_hazard_msg: Optional[str] = None
+
+
+@router.get("/hazards")
+async def get_regional_hazards():
+    """
+    Scan real-time meteorological & ISRO Bhuvan satellite hazards across agricultural zones.
+    """
+    from app.services.proactive_disaster_monitor import ProactiveDisasterMonitor
+    hazards = await ProactiveDisasterMonitor.scan_regional_hazards()
+    return JSONResponse(content=hazards)
+
+
+@router.post("/hazards/trigger-campaign")
+async def trigger_hazard_campaign(payload: TriggerHazardCampaignRequest):
+    """
+    1-Click Trigger proactive outbound AI calls (Mode B) to farmers in an affected district.
+    """
+    from app.services.proactive_disaster_monitor import ProactiveDisasterMonitor
+    result = await ProactiveDisasterMonitor.trigger_proactive_outreach(
+        district=payload.district,
+        phone_numbers=payload.phone_numbers,
+        custom_hazard_msg=payload.custom_hazard_msg
+    )
+    return JSONResponse(content=result)

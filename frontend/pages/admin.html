@@ -214,6 +214,26 @@
 
       <!-- Tab 3: Crop Insurance Claims Docket & Plausibility Review -->
       <section id="tab-claims" class="tab-content">
+        <!-- Mode B Proactive Disaster Scanner Widget -->
+        <div class="glass-panel" style="margin-bottom: 24px; border-color: rgba(59, 130, 246, 0.3);">
+          <div class="panel-header" style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px; margin-bottom: 16px;">
+            <div>
+              <h2><span>🛰️</span> Real-Time Disaster Radar & Proactive Farmer Outreach (Mode B)</h2>
+              <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
+                Powered by <strong>Open-Meteo</strong> & <strong>ISRO Bhuvan</strong> satellite telemetry. Proactively calls registered farmers in affected zones before they even file a claim.
+              </p>
+            </div>
+            <button id="scan-hazards-btn" class="btn btn-outline" style="border-color: rgba(59, 130, 246, 0.5); color: #60a5fa;">
+              🔄 Scan Districts Now
+            </button>
+          </div>
+
+          <div id="hazards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+            <!-- Dynamic Hazard Cards Injected via JS -->
+            <div style="color: var(--text-dim); font-size: 0.85rem; padding: 12px;">Scanning agricultural zones for meteorological anomalies...</div>
+          </div>
+        </div>
+
         <div class="glass-panel">
           <div class="panel-header">
             <div>

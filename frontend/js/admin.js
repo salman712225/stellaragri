@@ -299,6 +299,113 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  let hazardsData = [];
+  const hazardsContainer = document.getElementById('hazards-container');
+  const scanHazardsBtn = document.getElementById('scan-hazards-btn');
+
+  if (scanHazardsBtn) {
+    scanHazardsBtn.addEventListener('click', () => {
+      showToast('Scanning Open-Meteo & ISRO Bhuvan satellite radar...', 'info');
+      fetchHazards();
+    });
+  }
+
+  async function fetchHazards() {
+    try {
+      if (!hazardsContainer) return;
+      const res = await fetch('/api/admin/hazards');
+      const data = await res.json();
+      hazardsData = data;
+      renderHazards(data);
+    } catch (err) {
+      console.error('Hazards fetch failed:', err);
+    }
+  }
+
+  function renderHazards(hazards) {
+    if (!hazardsContainer) return;
+    hazardsContainer.innerHTML = '';
+
+    if (!Array.isArray(hazards) || hazards.length === 0) {
+      hazardsContainer.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 20px;">
+          No critical weather/disaster alerts active across monitored districts right now.
+        </div>`;
+      return;
+    }
+
+    hazards.forEach(hazard => {
+      const isSevere = hazard.severity === 'Severe' || hazard.severity === 'Critical';
+      const card = document.createElement('div');
+      card.style.cssText = `
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid ${isSevere ? 'rgba(239, 68, 68, 0.35)' : 'rgba(245, 158, 11, 0.35)'};
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      `;
+
+      card.innerHTML = `
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <h4 style="font-size: 0.95rem; font-weight: 600; color: #fff; margin: 0;">
+              📍 ${escapeHtml(hazard.district)}, ${escapeHtml(hazard.state)}
+            </h4>
+            <span class="status-badge" style="background: ${isSevere ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)'}; color: ${isSevere ? '#fca5a5' : '#fde68a'}; border-color: ${isSevere ? 'rgba(239,68,68,0.4)' : 'rgba(245,158,11,0.4)'};">
+              ${escapeHtml(hazard.severity)} Alert
+            </span>
+          </div>
+
+          <div style="font-size: 0.84rem; color: #93c5fd; font-weight: 500; margin-bottom: 6px;">
+            ⚠️ ${escapeHtml(hazard.hazard_type)}
+          </div>
+
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 10px;">
+            ${escapeHtml(hazard.description)}
+          </p>
+
+          <div style="font-size: 0.76rem; color: var(--text-dim); background: rgba(0,0,0,0.25); padding: 8px 10px; border-radius: 6px; margin-bottom: 12px;">
+            <div><strong>🛰️ Sensor/Telemetry:</strong> ${escapeHtml(hazard.satellite_sensor || 'Open-Meteo & Radar')}</div>
+            <div><strong>👥 At-Risk Contacts:</strong> ${hazard.farmer_count || 0} Registered Farmers</div>
+            <div><strong>📜 PMFBY Clause:</strong> ${escapeHtml(hazard.applicable_pmfby_clause || 'Localized Calamity')}</div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary trigger-campaign-btn" style="width: 100%; font-size: 0.82rem; padding: 8px; justify-content: center; background: ${isSevere ? '#dc2626' : 'var(--primary)'};">
+          📞 Launch Mode B Proactive Outreach
+        </button>
+      `;
+
+      card.querySelector('.trigger-campaign-btn').addEventListener('click', async () => {
+        if (!confirm(`Launch proactive outbound voice advisory calls to farmers in ${hazard.district}?`)) return;
+        showToast(`Dispatching proactive AI calls to farmers in ${hazard.district}...`, 'info');
+        try {
+          const res = await fetch('/api/admin/hazards/trigger-campaign', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              district: hazard.district,
+              custom_hazard_msg: hazard.outreach_script
+            })
+          });
+          const resData = await res.json();
+          if (res.ok && resData.success) {
+            showToast(`✅ Proactive Campaign Launched! ${resData.total_initiated} calls placed.`, 'success');
+            setTimeout(fetchCalls, 2000);
+          } else {
+            showToast(`❌ Campaign error: ${resData.detail || 'Failed'}`, 'error');
+          }
+        } catch (e) {
+          showToast(`❌ Error: ${e.message}`, 'error');
+        }
+      });
+
+      hazardsContainer.appendChild(card);
+    });
+  }
+
   async function fetchCalls() {
     try {
       const res = await fetch('/api/admin/calls');
@@ -978,6 +1085,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   fetchDashboardStatus();
   fetchCalls();
   fetchClaims();
+  fetchHazards();
   fetchEnquiries();
   fetchDbStatus();
   fetchErrorsAndLogs();
@@ -987,6 +1095,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     fetchDashboardStatus();
     fetchCalls();
     fetchClaims();
+    fetchHazards();
     fetchEnquiries();
     fetchDbStatus();
     fetchErrorsAndLogs();

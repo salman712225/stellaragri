@@ -15,6 +15,9 @@ class InsuranceService:
         "PMFBY": {
             "name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
             "authority": "Ministry of Agriculture & Farmers Welfare, Govt of India",
+            "portal_url": "https://pmfby.gov.in/",
+            "guidelines_url": "https://pmfby.gov.in/guidelines",
+            "downloads_url": "https://pmfby.gov.in/downloads",
             "coverage_stages": [
                 {
                     "stage": "Prevented Sowing / Planting Risk",

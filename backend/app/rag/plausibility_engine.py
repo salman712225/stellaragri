@@ -1,7 +1,9 @@
 """
 Plausibility Cross-Check Engine
-Validates farmer-reported loss claims against live/historical weather data and disaster event registries.
-Flags anomalies, calculates plausibility scores, and identifies fraud/mismatch risks.
+Tri-Tier Verification Pipeline:
+Tier 1: ISRO Bhuvan Satellite Geospatial Telemetry (SAR Flood Inundation & NADAMS Drought NDVI)
+Tier 2: IMD & Station Meteorological Telemetry (Precipitation & Temperature Radar)
+Tier 3: National Agricultural Disaster Catalog & PMFBY Scheme Clause Matcher
 """
 import urllib.request
 import urllib.parse
@@ -10,61 +12,14 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 from app.core.config import settings
 from app.core.logger import logger
+from app.rag.bhuvan_service import BhuvanGeospatialService
+from app.rag.insurance_service import InsuranceService
 
 
 class PlausibilityEngine:
     """
-    Evaluates reported crop damage plausibility against meteorological and disaster records.
+    Evaluates reported crop damage plausibility against meteorological and ISRO Bhuvan satellite records.
     """
-
-    # Reference disaster registry for known major Indian agricultural events
-    HISTORICAL_DISASTER_REGISTRY = [
-        {
-            "event": "Cyclone Michaung",
-            "type": "cyclone",
-            "regions": ["chennai", "tiruvallur", "kanchipuram", "chengalpattu", "cuddalore", "nellore", "bapatla"],
-            "states": ["tamil nadu", "andhra pradesh"],
-            "start_date": "2023-12-01",
-            "end_date": "2023-12-08",
-            "characteristics": "Extreme precipitation >250mm, wind speeds >100km/h, widespread agricultural flooding."
-        },
-        {
-            "event": "Cyclone Remal",
-            "type": "cyclone",
-            "regions": ["south 24 parganas", "north 24 parganas", "kolkata", "howrah", "hooghly", "coastal odisha"],
-            "states": ["west bengal", "odisha"],
-            "start_date": "2024-05-24",
-            "end_date": "2024-05-30",
-            "characteristics": "Severe cyclonic storm, heavy coastal surge, salinization of paddy fields."
-        },
-        {
-            "event": "Marathwada & Vidarbha Drought",
-            "type": "drought",
-            "regions": ["beed", "dharashiv", "osmanabad", "jalna", "latur", "aurangabad", "chhatrapati sambhajinagar"],
-            "states": ["maharashtra"],
-            "start_date": "2024-01-01",
-            "end_date": "2024-06-30",
-            "characteristics": "Prolonged dry spell >45 days, groundwater deficit, crop desiccation."
-        },
-        {
-            "event": "North India Unseasonal Hailstorm & Western Disturbance",
-            "type": "hailstorm",
-            "regions": ["punjab", "haryana", "sangrur", "ludhiana", "karnal", "kurukshetra", "meerut"],
-            "states": ["punjab", "haryana", "uttar pradesh"],
-            "start_date": "2024-03-01",
-            "end_date": "2024-03-10",
-            "characteristics": "Hailstorm with 20-30mm hail diameter causing lodging in mature wheat."
-        },
-        {
-            "event": "Cauvery Delta Flash Floods / Inundation",
-            "type": "flood",
-            "regions": ["thanjavur", "tiruvarur", "nagapattinam", "mayiladuthurai", "cuddalore"],
-            "states": ["tamil nadu"],
-            "start_date": "2023-11-15",
-            "end_date": "2024-01-15",
-            "characteristics": "Intense localized cloudburst and riverine overflow submerging Samba paddy crop."
-        }
-    ]
 
     @classmethod
     def evaluate_claim(
@@ -76,42 +31,43 @@ class PlausibilityEngine:
         acres_affected: Optional[float] = None
     ) -> Dict[str, Any]:
         """
-        Cross-validates reported claim against weather APIs and disaster registry.
-        Returns plausibility rating, risk flags, and verification notes.
+        Cross-validates reported claim against ISRO Bhuvan satellite observations,
+        live/historical meteorological stations, and PMFBY operational guidelines.
         """
         loc_clean = location.lower().strip() if location else "india"
         dmg_clean = damage_type.lower().strip() if damage_type else "general"
         crop_clean = crop.lower().strip() if crop else "crop"
 
-        # 1. Check historical disaster registry
-        registry_match = None
-        for entry in cls.HISTORICAL_DISASTER_REGISTRY:
-            # Check region/state match
-            region_match = any(r in loc_clean for r in entry["regions"]) or any(s in loc_clean for s in entry["states"])
-            type_match = entry["type"] in dmg_clean or dmg_clean in entry["type"]
-            
-            if region_match and type_match:
-                registry_match = entry
-                break
-            elif region_match and dmg_clean in ["flood", "cyclone", "heavy_rainfall", "unseasonal_rain"] and entry["type"] in ["cyclone", "flood"]:
-                registry_match = entry
-                break
+        # ── Tier 1: Query ISRO Bhuvan Geospatial Disaster Telemetry ──
+        bhuvan_result = BhuvanGeospatialService.query_satellite_disaster(
+            location=loc_clean,
+            damage_type=dmg_clean,
+            event_date=event_date
+        )
 
-        # 2. Query Live / Historical Weather
+        # ── Tier 2: Query Live / Historical Station Weather Radar ──
         weather_telemetry = cls._query_weather(loc_clean)
 
-        # 3. Compute Plausibility Matrix
+        # ── Tier 3: Compute Cross-Verification Matrix & Plausibility Score ──
         plausibility_score = 0.85
         status = "plausible"
         evidence_notes = []
         flags = []
 
-        if registry_match:
-            plausibility_score = 0.95
+        if bhuvan_result.get("bhuvan_verified"):
+            plausibility_score = 0.96
             status = "highly_plausible"
-            evidence_notes.append(f"Direct match with documented event '{registry_match['event']}' ({registry_match['characteristics']}).")
+            evidence_notes.append(
+                f"[ISRO Bhuvan Satellite Verified] Confirmed by {bhuvan_result.get('sensor')} for '{bhuvan_result.get('event_name')}'."
+            )
+            if bhuvan_result.get("metrics"):
+                metrics = bhuvan_result["metrics"]
+                if "submerged_cropland_pct" in metrics:
+                    evidence_notes.append(f"SAR Inundation: {metrics['submerged_cropland_pct']}% cropland submerged.")
+                if "ndvi_anomaly" in metrics:
+                    evidence_notes.append(f"NADAMS NDVI Deficit: {metrics['ndvi_anomaly']} vegetative anomaly index.")
         else:
-            # Weather plausibility checks
+            # Station telemetry verification
             precip = weather_telemetry.get("precip_mm", 0.0)
             temp = weather_telemetry.get("temp_c", 28.0)
             humidity = weather_telemetry.get("humidity", 60)
@@ -121,25 +77,25 @@ class PlausibilityEngine:
                 if precip > 15.0 or "rain" in condition or "storm" in condition or humidity > 80:
                     plausibility_score = 0.90
                     status = "plausible"
-                    evidence_notes.append(f"Recorded precipitation ({precip}mm) and high humidity ({humidity}%) support rainfall/waterlogging claim.")
+                    evidence_notes.append(f"Meteorological radar recorded {precip}mm rainfall & {humidity}% humidity supporting inundation.")
                 elif precip == 0.0 and humidity < 40 and "clear" in condition and not event_date:
                     plausibility_score = 0.40
                     status = "potential_mismatch"
-                    flags.append("WEATHER_ANOMALY: Current telemetry shows 0mm rainfall and dry conditions in the declared region.")
+                    flags.append("WEATHER_ANOMALY: Current station telemetry recorded 0.0mm rainfall and dry skies.")
                     evidence_notes.append("Requires field surveyor check or verification of exact past date rainfall logs.")
                 else:
-                    plausibility_score = 0.75
+                    plausibility_score = 0.76
                     status = "plausible_with_verification"
-                    evidence_notes.append(f"Weather telemetry recorded {precip}mm rainfall. Localized micro-climate inundation plausible.")
+                    evidence_notes.append(f"Station recorded {precip}mm precipitation. Micro-climate or localized canal overflow plausible.")
 
             elif any(k in dmg_clean for k in ["drought", "dry", "heat"]):
                 if temp > 35.0 or humidity < 45 or precip == 0:
                     plausibility_score = 0.92
                     status = "plausible"
-                    evidence_notes.append(f"High temperature ({temp}°C) and low precipitation confirm drought/moisture stress conditions.")
+                    evidence_notes.append(f"High temperature ({temp}°C) and low humidity confirm moisture stress.")
                 else:
-                    plausibility_score = 0.70
-                    evidence_notes.append("Moderate temperatures recorded. Sub-soil moisture deficit should be verified via remote sensing.")
+                    plausibility_score = 0.72
+                    evidence_notes.append("Moderate temperatures recorded. Sub-soil moisture deficit should be verified by CCE.")
 
             elif any(k in dmg_clean for k in ["pest", "disease", "blast", "blight", "hopper"]):
                 plausibility_score = 0.88
@@ -149,11 +105,14 @@ class PlausibilityEngine:
             else:
                 plausibility_score = 0.80
                 status = "plausible"
-                evidence_notes.append("Reported damage category is standard under PMFBY mid-season adversity provisions.")
+                evidence_notes.append("Reported damage is standard under PMFBY comprehensive risk provisions.")
 
         # Flag for large acreage without registration
         if acres_affected and acres_affected > 20:
             flags.append("LARGE_AREA_FLAG: Affected land exceeds 20 acres; mandatory joint inspection by District Collectorate recommended.")
+
+        # Determine exact applicable PMFBY Scheme Clause
+        applicable_pmfby_clause = bhuvan_result.get("pmfby_clause") or "PMFBY Clause 2.1.4: Localized Calamities (Hailstorm / Inundation / Cyclone)"
 
         return {
             "plausibility_score": round(plausibility_score, 2),
@@ -161,6 +120,20 @@ class PlausibilityEngine:
             "is_mismatch": status == "potential_mismatch",
             "flags": flags,
             "evidence_notes": evidence_notes,
+            "bhuvan_satellite_data": {
+                "verified": bhuvan_result.get("bhuvan_verified", False),
+                "event_id": bhuvan_result.get("event_id"),
+                "event_name": bhuvan_result.get("event_name"),
+                "sensor": bhuvan_result.get("sensor"),
+                "metrics": bhuvan_result.get("metrics"),
+                "coordinates": bhuvan_result.get("geo_coordinates")
+            },
+            "pmfby_scheme_mapping": {
+                "scheme": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+                "clause": applicable_pmfby_clause,
+                "intimation_window": "Mandatory within 72 hours of damage event",
+                "evidence_checklist": [d["name"] for d in InsuranceService.get_evidence_checklist()]
+            },
             "telemetry_snapshot": {
                 "location": location,
                 "temperature": f"{weather_telemetry.get('temp_c', 28)}°C",
@@ -169,9 +142,9 @@ class PlausibilityEngine:
                 "humidity": f"{weather_telemetry.get('humidity', 60)}%"
             },
             "recommendation": (
-                "Proceed with standard PMFBY claim registration and assign surveyor."
+                "Proceed with PMFBY claim registration and assign joint loss surveyor."
                 if status != "potential_mismatch" else
-                "Flag for Human Officer Review: Cross-check local Mandal/Taluk rainfall station data."
+                "Flag for Human Officer Review: Cross-check local Mandal/Taluk rainfall station logs."
             )
         }
 
