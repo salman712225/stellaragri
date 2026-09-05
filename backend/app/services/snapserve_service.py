@@ -310,13 +310,14 @@ CONVERSATION STYLE:
 - Spoken, empathetic, and natural (1 to 3 short sentences per turn).
 - Ask only 1 question at a time to keep it easy for rural callers.
 - Seamlessly code-switch between local agricultural terms and English (Nel, Uram, Chitta, Patta, Khasra, Bima).
+- CRITICAL ANTI-ECHO RULE: Do NOT repeat or echo back what the farmer just said. Directly provide the answer, advice, or next question without restating their sentence.
 """
 
     @classmethod
     async def configure_baseline_agent(cls, agent_id: int = 1028) -> bool:
         """
         Configures Agent #1028 with the universal bilingual greeting and dual-capability system prompt
-        so that all Inbound and Outbound calls work perfectly.
+        so that all Inbound and Outbound calls work perfectly with zero audio echo / loopback.
         """
         universal_greeting = "Namaste and Vanakkam! I am your Stellar Agri AI farming and PMFBY crop insurance advisor. Main aapki kya madad kar sakta hoon? You can ask for crop advice, disease treatment, mandi rates, or report a crop damage insurance claim."
         
@@ -326,10 +327,19 @@ CONVERSATION STYLE:
             "asrLanguage": "hi-IN",
             "greetingMessage": universal_greeting,
             "systemPrompt": cls.get_universal_system_prompt(),
-            "status": "active"
+            "status": "active",
+            "backchannelingEnabled": False,
+            "noiseCancellationEnabled": True,
+            "agentConfig": {
+                "asrEndpointingSilenceMs": 600,
+                "bargeInEnergyThreshold": 1800,
+                "wordsForInterruption": 4,
+                "isMultilingual": True,
+                "multilingualLanguages": ["en-IN", "hi-IN", "ta-IN", "te-IN", "kn-IN", "mr-IN"]
+            }
         }
 
-        logger.info(f"🌐 Setting Permanent Dual-Capability Base on Agent #{agent_id} (Universal Greeting)")
+        logger.info(f"🌐 Setting Permanent Dual-Capability Base on Agent #{agent_id} (Echo-Free Universal Mode)")
         res = await cls.update_agent(agent_id, patch_payload)
         return res.get("success", False)
 
