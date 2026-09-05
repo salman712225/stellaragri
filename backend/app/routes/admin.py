@@ -239,21 +239,9 @@ async def provision_stellar_agent():
         "ttsModel": "bulbul:v3",
         "telephonyProvider": "vobiz",
         "firstSpeaker": "assistant",
-        "greetingMessage": "Namaste! Main Stellar Agri AI se bol raha hoon. Fasal, beemari, khad ya mandi bhav se judi kya madad chahiye aapko?",
-        "systemPrompt": """You are Stellar Agri AI, an expert agronomist, crop doctor, and farming consultant.
-You help Indian farmers over phone calls with:
-1. Crop Suitability & Sowing Schedules (Paddy, Cotton, Wheat, Maize, Tomato, Sugarcane, etc.).
-2. Fertilizer Dosage (Urea, DAP, MOP, SSP recommendations based on crop and growth stage).
-3. Pest & Disease Diagnosis and Remedy (Brown plant hopper, blight, stem borer, wilt, rust).
-4. Real-Time Mandi Prices (APMC modal price benchmarks per quintal).
-5. Weather-Based Irrigation & Spray Advisories (Rain alerts, humidity, optimal spray timing).
-
-CRITICAL VOICE CALL RULES:
-- Keep answers concise, natural, and spoken (1-3 sentences per turn).
-- Avoid reciting large tables or complex scientific terms; use practical farmer-friendly language.
-- Speak in Hindi / English / Hinglish or the farmer's preferred language.
-- Always provide clear actionable next steps (exact fertilizer dosage or pesticide name).""",
-        "endCallPhrases": "dhanyawad,alvida,goodbye,bye,ram ram,namaste",
+        "greetingMessage": "Namaste and Vanakkam! I am your Stellar Agri AI farming and PMFBY crop insurance advisor. Main aapki kya madad kar sakta hoon? You can ask for crop advice, disease treatment, mandi rates, or report a crop damage insurance claim.",
+        "systemPrompt": SnapServeService.get_universal_system_prompt(),
+        "endCallPhrases": "dhanyawad,alvida,goodbye,bye,ram ram,namaste,thank you",
         "silenceTimeoutSeconds": 25,
         "backchannelingEnabled": True,
         "backchannelingFrequency": 0.4,

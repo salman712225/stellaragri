@@ -236,141 +236,100 @@ class SnapServeService:
     async def create_agent(cls, payload: Dict[str, Any]) -> Dict[str, Any]:
         return await cls.request("POST", "/agents", payload)
 
+    # ── Universal Multi-Lingual Inbound & Outbound Greetings ──
+    UNIVERSAL_INBOUND_GREETINGS = {
+        "hi-IN": "Namaste! Main Stellar Agri AI farming aur PMFBY fasal bima advisor bol raha hoon. Main aapki kya madad kar sakta hoon? Aap fasal salah ya bima claim intimation dono ke liye puch sakte hain.",
+        "ta-IN": "Vanakkam! Naan Stellar Agri AI vivasayam matrum PMFBY payir bima aalochagar pesugiren. Ungalukku payir aalosanai thevaiya, alladhu payir sedhaara bima claim pathi pesalaama?",
+        "te-IN": "Namaskaram! Nenu Stellar Agri AI vyavasayam mariyu PMFBY panta bima salahadarunini. Panta salahalu kaavala leka panta nashtam bima claim gurinchi maatladala?",
+        "kn-IN": "Namaskara! Naanu Stellar Agri AI krushi mathu PMFBY bima salahagara. Nimge bele salahagalu bekagideya athava bima claim intimation bagge mathadabekaa?",
+        "mr-IN": "Namaskar! Mi Stellar Agri AI krushi v PMFBY peak vima sallyagar bolat ahe. Aplyala pik salah havi ahe ki peak nuksan vima claim intimation babat madat havi ahe?",
+        "bn-IN": "Nomoshkar! Aami Stellar Agri AI krishi o PMFBY fasol bima poramorshok bolchi. Aaponar ki fasol poramorsho dorkar naki bima claim intimation niye kotha bolben?",
+        "gu-IN": "Namaste! Hu Stellar Agri AI krushi ane PMFBY pak vima salahkar chu. Tamare pak salah joiye che ke pak nuksan vima claim intimation mate vat karvi che?",
+        "pa-IN": "Sat Sri Akal! Main Stellar Agri AI kheti te PMFBY fasal bima salahkar bol reha haan. Tuhanoo fasal salah chahidi hai ya fasal nuksan bima claim intimation baare gal karni hai?",
+        "ml-IN": "Namaskaram! Njan Stellar Agri AI krishi mathrum PMFBY crop insurance salahakan samsarikunnu. Ningalkku krishi nirdeshangal aano atho bima claim intimation aano vendathu?",
+        "en-IN": "Namaste and Vanakkam! I am your Stellar Agri AI farming and PMFBY crop insurance advisor. How may I assist you today? You can ask for crop farming advice or file a crop loss insurance claim."
+    }
+
     @classmethod
-    async def configure_agent_for_call(
-        cls,
-        agent_id: int,
-        language: str = "hi-IN",
-        farmer_name: str = "Farmer",
-        crop: str = "Paddy",
-        issue: Optional[str] = None,
-        location: Optional[str] = None,
-        is_insurance_claim: bool = False
-    ) -> bool:
+    def get_universal_system_prompt(cls) -> str:
         """
-        Dynamically configure the agent's language, ASR acoustic model,
-        personalized opening greeting, and PMFBY insurance/agronomy instructions with live weather telemetry.
+        Comprehensive Dual-Capability System Prompt for Agent #1028 (Advisory + PMFBY Insurance)
+        Gracefully handles both Inbound callers (discovers name/need) and Outbound campaigns (uses session variables).
         """
-        lang_key = language if language in cls.LANGUAGE_CONFIGS else "hi-IN"
-        config = cls.LANGUAGE_CONFIGS[lang_key]
+        return """You are Stellar Agri AI, an intelligent conversational AI Agronomist and certified PMFBY (Pradhan Mantri Fasal Bima Yojana) Crop Insurance Claims Specialist.
 
-        # ── 1. Fetch Real-Time Weather Telemetry ──
-        loc_str = location or "Cuddalore"
-        weather_info = "Weather telemetry: Normal agricultural temperature (28°C to 34°C), stable humidity, moderate conditions."
-        try:
-            w = WeatherService.get_weather(location=loc_str)
-            if w.get("status") == "success":
-                temp = w.get("temperature", 30)
-                feels = w.get("feels_like", temp)
-                cond = w.get("condition", "Clear")
-                hum = w.get("humidity", 50)
-                agri = w.get("agriculture", {})
-                irr = "Irrigation is needed due to low recent precipitation" if agri.get("irrigation_needed") else "Soil moisture is adequate, irrigation can be delayed"
-                rain_prob = agri.get("rain_probability", 0)
-                fungal = agri.get("fungal_risk", "Low")
-                heat = "High heat stress warning" if agri.get("heat_stress") else "Normal temperature range"
-                weather_info = (
-                    f"- Current Weather in {loc_str}: {temp}°C (Feels like {feels}°C), Sky: {cond}\n"
-                    f"- Humidity: {hum}%, Probability of Rain: {rain_prob}%\n"
-                    f"- Agronomy Alert: {irr}. Fungal disease risk is {fungal}. {heat}."
-                )
-        except Exception as e:
-            logger.warning(f"Could not fetch live weather for agent prompt: {e}")
+ROLE & CAPABILITIES:
+You seamlessly handle BOTH:
+1. AGRICULTURAL ADVISORY: Crop suitability, sowing advice, fertilizer dosage (Urea, DAP, MOP), pest & disease diagnosis/remedies, live weather advisories, and APMC mandi benchmark prices.
+2. CROP INSURANCE & DISASTER CLAIM INTAKE: PMFBY, RWBCIS, NDRF, SDRF, and regional relief schemes for Flood, Drought, Cyclone, Hailstorm, Pest Epidemic, and Unseasonal Harvest loss.
 
-        # ── 2. Fetch Real-Time APMC Mandi Market Prices ──
-        market_info = f"Market Prices: Benchmark APMC Mandi rates available for {crop}."
-        try:
-            m = MarketService.get_market_price(crop=crop or "Rice")
-            if m.get("status") == "success":
-                crop_name = m.get("crop", crop)
-                modal = m.get("modal_price", "₹2,200 / quintal")
-                p_min = m.get("min_price", "₹2,000 / quintal")
-                p_max = m.get("max_price", "₹2,400 / quintal")
-                rec = m.get("analysis", {}).get("selling_recommendation", "Good time to sell at local APMC mandi")
-                market_info = (
-                    f"- Target Crop: {crop_name}\n"
-                    f"- APMC Mandi Modal Price: {modal}\n"
-                    f"- Market Price Range: {p_min} to {p_max}\n"
-                    f"- Selling Recommendation: {rec}."
-                )
-        except Exception as e:
-            logger.warning(f"Could not fetch live market prices for agent prompt: {e}")
+SESSION CONTEXT & DYNAMIC VARIABLES:
+- Farmer Name: {{farmer_name}} (If unknown/empty, politely ask the caller's name)
+- Location / District: {{location}} (If unknown/empty, ask their village or district)
+- Target Crop: {{crop}} (If unknown, ask what crop they are cultivating)
+- Reported Query / Disaster: {{issue}}
+- Insurance Mode Flag: {{is_insurance_claim}}
 
-        # Generate personalized opening greeting in selected language
-        has_name = farmer_name and farmer_name.strip() and farmer_name.strip().lower() not in ["farmer", "kisan", "vivasayi"]
-        name_str = farmer_name.strip() if has_name else ("Farmer" if lang_key == "en-IN" else "Kisan Bhai")
-        crop_str = crop.strip() if crop and crop.strip() else "crop"
-        issue_str = issue.strip() if issue and issue.strip() else ""
-        location_str = (location or "your village / district").strip()
+CALL ROUTING RULES:
+A. INBOUND CALLS (Farmer dials in):
+   - Listen to what the caller says in the first turn.
+   - If they ask for crop/fertilizer/pest/mandi advice, provide direct, practical agronomic solutions immediately.
+   - If they mention crop damage, flood, cyclone, drought, heavy rain, or insurance, switch directly to the PMFBY Loss Intake Protocol below.
+   - If their name or district is not known, ask politely in a natural conversational flow.
 
-        if is_insurance_claim:
-            greeting = config.get("insurance_greeting_template", config["greeting_template"]).format(
-                farmer_name=name_str, location=location_str, crop=crop_str
-            )
-        elif has_name:
-            greeting = config["greeting_template"].format(farmer_name=name_str, crop=crop_str)
-        else:
-            greeting = config["default_greeting"]
+B. OUTBOUND CALLS (System placed call with variables):
+   - If {{farmer_name}} is provided, address the farmer respectfully by name.
+   - If {{is_insurance_claim}} is true, open directly regarding their loss in {{location}} and assist with their intimation docket.
 
-        # Build specialized system prompt tailored for the farmer & selected language with Voistle Conversational Flow
-        prompt = f"""You are Stellar Agri AI, an expert agricultural scientist and certified PMFBY (Pradhan Mantri Fasal Bima Yojana) crop insurance claims specialist.
-
-CRITICAL LANGUAGE REQUIREMENT:
-{config["language_instruction"]}
-The caller specifically requested advisory in {config["name"]}. You MUST converse and answer exclusively in {config["name"]}.
-
-CALLER CONTEXT:
-- Farmer Name: {name_str}
-- Location: {location_str}
-- Crop: {crop_str}
-- Reported Query / Disaster: {issue_str or 'PMFBY Crop Loss Intimation & Disaster Assessment'}
-- Is Insurance Flow: {'YES (PMFBY Claim Intake)' if is_insurance_claim else 'Standard Agronomy & Insurance Enabled'}
-
-LIVE REAL-TIME AGRI TELEMETRY & MARKET PRICES:
-[LIVE WEATHER FORECAST]
-{weather_info}
-
-[LIVE APMC MANDI COMMODITY PRICES]
-{market_info}
-
-VOISTLE PMFBY CROP INSURANCE CORE CONVERSATIONAL FLOW:
-When handling a crop loss/insurance query, follow this strict step-by-step intake protocol:
-1. EMPATHETIC LOSS INTAKE: Greet warmly, acknowledge the loss empathetically (*"I am sorry to hear about the crop loss in {location_str}."*).
+VOISTLE PMFBY CROP INSURANCE INTAKE PROTOCOL:
+When a loss or insurance claim is reported, follow these strict steps:
+1. EMPATHETIC LOSS INTAKE: Acknowledge the loss warmly and validate the farmer's stress.
 2. 72-HOUR INTIMATION WINDOW VERIFICATION:
-   - Ask when the loss occurred (Day/Date).
-   - Under PMFBY operational guidelines, loss intimation is MANDATORY within 72 hours of the event. Confirm if it is within 72 hours.
-3. LOSS DETAILS & LOCATION:
-   - Ask for the affected crop ({crop_str}), village/Mandal, and approximate acres affected (e.g. 2 acres, 5 acres).
-4. REQUIRED 5 DOCUMENTS CHECKLIST:
-   - Explicitly inform the caller of the 5 mandatory documents required:
-     a. Land Record (7/12 Extract / Patta-Chitta / Khasra / Adangal)
-     b. Sowing Certificate (VAO / Panchayat certificate)
-     c. Bank Passbook Copy (Aadhaar linked)
+   - Ask: "When did the loss event occur?"
+   - Confirm compliance with the mandatory PMFBY 72-hour notification rule.
+3. LOSS DETAILS:
+   - Record the affected crop, village/Mandal, and approximate acres damaged (e.g. 2.5 acres).
+4. APPLICABLE SCHEME MATCHING:
+   - Quote relevant schemes: PMFBY Localized Calamity, NDRF/SDRF Input Subsidy, NADAMS Drought Grant, Cyclone Lodging Relief, Hailstorm Guarantee, or Post-Harvest 14-day coverage.
+5. REQUIRED 5 DOCUMENTS CHECKLIST:
+   - Explain the 5 essential records:
+     a. Land Record (Patta / Chitta / 7/12 Extract / Khasra / Adangal)
+     b. Sowing Certificate (VAO / Panchayat Sown Declaration)
+     c. Bank Passbook Copy (Aadhaar linked account)
      d. Aadhaar Card
-     e. Geo-tagged Photos of damaged field (taken with GPS on phone)
-5. STRICT ANTI-OVERPROMISING GUARDRAIL (GATE CRITERIA):
+     e. Geo-tagged Photos of damaged field (taken with GPS enabled on phone)
+6. STRICT ANTI-OVERPROMISING GUARDRAIL (GATE CRITERIA):
    - NEVER promise, guarantee, or estimate claim approval, payout amounts (₹), or payment dates.
    - If asked "Will I get money?", state clearly:
-     *"Under PMFBY rules, claim compensation is determined exclusively post joint physical survey by the insurance loss assessor and state agriculture officer. Your docket has been registered for surveyor assessment."*
-6. ANOMALY / MISMATCH ESCALATION:
-   - If telemetry shows contradictory weather, do not accuse the farmer of fraud. State that Mandal telemetry is attached and file is routed to senior officer for on-field check.
-7. DISTRESS DE-ESCALATION:
-   - If caller is distressed or weeping, express immediate comfort and confirm escalation to senior agricultural officer.
+     "Under PMFBY government rules, compensation amount and approval are decided exclusively following a joint physical survey by the insurance loss assessor and state agriculture officer. Your intimation docket is registered for surveyor inspection."
+7. ANOMALY & DISTRESS HANDLING:
+   - If weather data differs, do not accuse the caller. State that Mandal telemetry is attached for priority senior officer verification.
+   - If caller is in acute distress, provide immediate reassurance and confirm escalation to the senior officer desk.
 
-GENERAL AGRONOMY RULES (FOR CROP/FERTILIZER/PEST QUERIES):
-- Keep answers spoken, practical, and short (1-3 sentences per turn).
-- Ask 1 question at a time to prevent cognitive overload.
+CONVERSATION STYLE:
+- Spoken, empathetic, and natural (1 to 3 short sentences per turn).
+- Ask only 1 question at a time to keep it easy for rural callers.
+- Seamlessly code-switch between local agricultural terms and English (Nel, Uram, Chitta, Patta, Khasra, Bima).
 """
 
+    @classmethod
+    async def configure_baseline_agent(cls, agent_id: int = 1028) -> bool:
+        """
+        Configures Agent #1028 with the universal bilingual greeting and dual-capability system prompt
+        so that all Inbound and Outbound calls work perfectly.
+        """
+        universal_greeting = "Namaste and Vanakkam! I am your Stellar Agri AI farming and PMFBY crop insurance advisor. Main aapki kya madad kar sakta hoon? You can ask for crop advice, disease treatment, mandi rates, or report a crop damage insurance claim."
+        
         patch_payload = {
-            "language": lang_key,
-            "asrLanguage": config["asrLanguage"],
-            "greetingMessage": greeting,
-            "systemPrompt": prompt,
+            "name": "Stellar Agri Voice Advisor",
+            "language": "hi-IN",
+            "asrLanguage": "hi-IN",
+            "greetingMessage": universal_greeting,
+            "systemPrompt": cls.get_universal_system_prompt(),
             "status": "active"
         }
 
-        logger.info(f"🌐 Configuring Agent #{agent_id} for Language '{config['name']}' ({lang_key}) with Voistle PMFBY flow. Greeting: '{greeting}'")
+        logger.info(f"🌐 Setting Permanent Dual-Capability Base on Agent #{agent_id} (Universal Greeting)")
         res = await cls.update_agent(agent_id, patch_payload)
         return res.get("success", False)
 
