@@ -1,0 +1,70 @@
+[
+  {
+    "id": "CLM-401928",
+    "farmer_name": "Kishore Raman",
+    "phone_number": "+919876543210",
+    "crop": "Paddy (Samba)",
+    "damage_type": "Cyclone Michaung Inundation",
+    "affected_acres": 4.5,
+    "event_date": "2023-12-04",
+    "location": "Kurinjipadi Taluk, Cuddalore, Tamil Nadu",
+    "plausibility_score": 0.95,
+    "status": "verified",
+    "flags": [],
+    "evidence_checklist": [
+      {"name": "Patta / Chitta Land Record", "collected": true},
+      {"name": "Sowing Certificate", "collected": true},
+      {"name": "Aadhaar Card", "collected": true},
+      {"name": "Bank Passbook", "collected": true},
+      {"name": "Geo-Tagged Damage Photos", "collected": true}
+    ],
+    "notes": "Direct match with Cyclone Michaung (Rainfall >250mm). Passed to local Agriculture Officer for joint surveyor assessment.",
+    "created_at": "2026-09-05T10:15:00.000Z"
+  },
+  {
+    "id": "CLM-509312",
+    "farmer_name": "Ramesh Patil",
+    "phone_number": "+919423156789",
+    "crop": "Soybean",
+    "damage_type": "Severe Flash Flood",
+    "affected_acres": 3.0,
+    "event_date": "2024-05-12",
+    "location": "Beed, Maharashtra",
+    "plausibility_score": 0.42,
+    "status": "flagged_mismatch",
+    "flags": [
+      "WEATHER_ANOMALY: Historical telemetry recorded 0.0mm precipitation and heatwave during reported timeframe."
+    ],
+    "evidence_checklist": [
+      {"name": "7/12 Land Record", "collected": true},
+      {"name": "Sowing Certificate", "collected": true},
+      {"name": "Aadhaar Card", "collected": true},
+      {"name": "Bank Passbook", "collected": true},
+      {"name": "Geo-Tagged Damage Photos", "collected": false}
+    ],
+    "notes": "Disaster registry and Mandal rainfall station indicate drought period. Flagged for human review without farmer accusation.",
+    "created_at": "2026-09-05T11:30:00.000Z"
+  },
+  {
+    "id": "CLM-612840",
+    "farmer_name": "Harpreet Singh",
+    "phone_number": "+919814023456",
+    "crop": "Wheat",
+    "damage_type": "Unseasonal Hailstorm & Lodging",
+    "affected_acres": 5.0,
+    "event_date": "2024-03-05",
+    "location": "Sangrur, Punjab",
+    "plausibility_score": 0.92,
+    "status": "pending_surveyor_review",
+    "flags": [],
+    "evidence_checklist": [
+      {"name": "Khasra / Khatauni Record", "collected": true},
+      {"name": "Sowing Certificate", "collected": true},
+      {"name": "Aadhaar Card", "collected": true},
+      {"name": "Bank Passbook", "collected": true},
+      {"name": "Geo-Tagged Damage Photos", "collected": true}
+    ],
+    "notes": "Western disturbance hail event confirmed by IMD Chandigarh radar logs. Within 72-hour intimation window.",
+    "created_at": "2026-09-05T12:00:00.000Z"
+  }
+]

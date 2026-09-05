@@ -1,0 +1,208 @@
+/* ==========================================================
+   Stellar Agri AI - Dynamic UI Renderer
+   ========================================================== */
+
+function formatText(value, fallback = '') {
+    if (value === null || value === undefined) return fallback;
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+    if (Array.isArray(value)) {
+        return value.map(v => formatText(v)).filter(Boolean).join(', ');
+    }
+    if (typeof value === 'object') {
+        const parts = [];
+        if (value.crop) parts.push(value.crop);
+        if (value.market) parts.push(`@ ${value.market}`);
+        if (value.modal_price || value.modalPrice || value.modal) {
+            parts.push(`Modal: ${value.modal_price || value.modalPrice || value.modal}`);
+        }
+        if (value.minimum_price || value.min_price || value.min) {
+            parts.push(`Min: ${value.minimum_price || value.min_price || value.min}`);
+        }
+        if (value.maximum_price || value.max_price || value.max) {
+            parts.push(`Max: ${value.maximum_price || value.max_price || value.max}`);
+        }
+        if (value.price) parts.push(`Price: ${value.price}`);
+        if (value.arrival) parts.push(`Arrival: ${value.arrival}`);
+
+        if (parts.length > 0) return parts.join(' | ');
+
+        return Object.entries(value)
+            .map(([k, v]) => `${k.replace(/_/g, ' ')}: ${formatText(v)}`)
+            .join(' • ');
+    }
+    return String(value);
+}
+
+class UIRenderer {
+    static renderResponse(data) {
+        const resultsArea = document.getElementById('results-area');
+        resultsArea.classList.remove('hidden');
+
+        // Scroll to results
+        resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // 1. Badges
+        const intentBadge = document.getElementById('intent-badge');
+        const confidenceBadge = document.getElementById('confidence-badge');
+
+        intentBadge.textContent = `Intent: ${(formatText(data.intent, 'General')).toUpperCase().replace(/_/g, ' ')}`;
+        const confidenceVal = data.confidence ? Math.round(data.confidence * 100) : 100;
+        confidenceBadge.textContent = `Confidence: ${confidenceVal}%`;
+
+        // 2. Executive Summary
+        const summaryContent = document.getElementById('summary-content');
+        summaryContent.textContent = formatText(data.summary, 'Summary unavailable.');
+
+        // 3. Key Recommendations / Answers
+        const answersList = document.getElementById('answers-list');
+        answersList.innerHTML = '';
+        const answers = Array.isArray(data.answer) ? data.answer : (data.answer ? [data.answer] : []);
+        if (answers.length > 0) {
+            answers.forEach(ans => {
+                const li = document.createElement('li');
+                li.textContent = formatText(ans);
+                answersList.appendChild(li);
+            });
+        } else {
+            const li = document.createElement('li');
+            li.textContent = 'Follow specific domain cards below for complete advice.';
+            answersList.appendChild(li);
+        }
+
+        // Helper to show/hide cards
+        const setupCard = (cardId, hasData, populateFn) => {
+            const card = document.getElementById(cardId);
+            if (hasData) {
+                card.classList.remove('hidden');
+                populateFn();
+            } else {
+                card.classList.add('hidden');
+            }
+        };
+
+        // 4. Crop Recommendation Card
+        const cropData = data.crop_recommendation;
+        setupCard('card-crop', cropData && (cropData.crop || cropData.reason), () => {
+            document.getElementById('crop-name').textContent = cropData.crop ? formatText(cropData.crop).toUpperCase() : 'N/A';
+            document.getElementById('crop-reason').textContent = formatText(cropData.reason, 'Recommended based on soil and climatic conditions.');
+        });
+
+        // 5. Fertilizer Advice Card
+        const fertData = data.fertilizer_advice;
+        setupCard('card-fertilizer', fertData && (
+            (Array.isArray(fertData.recommended) && fertData.recommended.length > 0) || fertData.application
+        ), () => {
+            const pillsContainer = document.getElementById('fertilizer-pills');
+            pillsContainer.innerHTML = '';
+
+            const items = Array.isArray(fertData.recommended) ? fertData.recommended : [fertData.recommended];
+            items.forEach(item => {
+                if (!item) return;
+                const pill = document.createElement('span');
+                pill.className = 'pill-item';
+                if (typeof item === 'object' && item.name) {
+                    pill.textContent = `${formatText(item.name)}${item.reason ? ': ' + formatText(item.reason) : ''}`;
+                } else {
+                    pill.textContent = formatText(item);
+                }
+                pillsContainer.appendChild(pill);
+            });
+
+            document.getElementById('fertilizer-application').textContent = formatText(fertData.application, 'Apply as per prescribed dosage.');
+        });
+
+        // 6. Disease Analysis Card
+        const diseaseData = data.disease_analysis;
+        const hasDiseaseInfo = diseaseData && (
+            (diseaseData.disease && diseaseData.disease !== 'Unknown' && diseaseData.disease !== 'null') ||
+            (Array.isArray(diseaseData.symptoms) && diseaseData.symptoms.length > 0) ||
+            (data.intent === 'disease' && diseaseData.recommendation)
+        );
+        setupCard('card-disease', hasDiseaseInfo, () => {
+            const dName = diseaseData.disease && diseaseData.disease !== 'Unknown' && diseaseData.disease !== 'null'
+                ? formatText(diseaseData.disease).toUpperCase()
+                : 'CROP HEALTH & PROTECTION ADVISORY';
+            document.getElementById('disease-name').textContent = dName;
+            
+            const symptoms = Array.isArray(diseaseData.symptoms) ? diseaseData.symptoms.map(s => formatText(s)).join(', ') : formatText(diseaseData.symptoms);
+            document.getElementById('disease-symptoms').textContent = symptoms ? `Symptoms: ${symptoms}` : '';
+            document.getElementById('disease-recommendation').textContent = formatText(diseaseData.recommendation, 'Follow recommended fungicide/biocontrol spray guidelines.');
+        });
+
+        // 7. Pest Analysis Card
+        const pestData = data.pest_analysis;
+        const hasPestInfo = pestData && (
+            (pestData.pest && pestData.pest !== 'Detected Pest' && pestData.pest !== 'null') ||
+            (data.intent === 'pest_control' && pestData.recommendation)
+        );
+        setupCard('card-pest', hasPestInfo, () => {
+            const pName = pestData.pest && pestData.pest !== 'Detected Pest' && pestData.pest !== 'null'
+                ? formatText(pestData.pest).toUpperCase()
+                : 'INTEGRATED PEST MANAGEMENT (IPM)';
+            document.getElementById('pest-name').textContent = pName;
+            document.getElementById('pest-recommendation').textContent = formatText(pestData.recommendation, 'Follow organic and targeted pesticide management.');
+        });
+
+        // 8. Weather Insights Card
+        const weatherData = data.weather_analysis;
+        setupCard('card-weather', weatherData && (weatherData.impact || weatherData.recommendation), () => {
+            document.getElementById('weather-impact').textContent = formatText(weatherData.impact, 'Weather condition analysis active.');
+            document.getElementById('weather-recommendation').textContent = formatText(weatherData.recommendation);
+        });
+
+        // 9. Market Analysis Card
+        const marketData = data.market_analysis;
+        setupCard('card-market', marketData && (marketData.current_price || marketData.recommendation), () => {
+            document.getElementById('market-price').textContent = formatText(marketData.current_price, 'Live Prices Checked');
+            document.getElementById('market-recommendation').textContent = formatText(marketData.recommendation, 'Market trend analysis.');
+        });
+
+        // 10. Irrigation Advice Card
+        const irrData = data.irrigation_advice;
+        setupCard('card-irrigation', irrData && (irrData.schedule || irrData.recommendation), () => {
+            document.getElementById('irrigation-schedule').textContent = irrData.schedule ? `Schedule: ${formatText(irrData.schedule)}` : '';
+            document.getElementById('irrigation-recommendation').textContent = formatText(irrData.recommendation);
+        });
+
+        // 11. Crop Management Card
+        const mgmtData = data.crop_management;
+        setupCard('card-management', mgmtData && (mgmtData.growth_stage || mgmtData.recommendation), () => {
+            document.getElementById('management-stage').textContent = mgmtData.growth_stage ? `Stage: ${formatText(mgmtData.growth_stage)}` : '';
+            document.getElementById('management-recommendation').textContent = formatText(mgmtData.recommendation);
+        });
+
+        // 12. Warnings
+        const warningsBox = document.getElementById('warnings-box');
+        const warningsList = document.getElementById('warnings-list');
+        warningsList.innerHTML = '';
+        if (Array.isArray(data.warnings) && data.warnings.length > 0) {
+            warningsBox.classList.remove('hidden');
+            data.warnings.forEach(w => {
+                const li = document.createElement('li');
+                li.textContent = formatText(w);
+                warningsList.appendChild(li);
+            });
+        } else {
+            warningsBox.classList.add('hidden');
+        }
+
+        // 13. Next Steps
+        const nextstepsBox = document.getElementById('nextsteps-box');
+        const nextstepsList = document.getElementById('nextsteps-list');
+        nextstepsList.innerHTML = '';
+        if (Array.isArray(data.next_steps) && data.next_steps.length > 0) {
+            nextstepsBox.classList.remove('hidden');
+            data.next_steps.forEach(s => {
+                const li = document.createElement('li');
+                li.textContent = formatText(s);
+                nextstepsList.appendChild(li);
+            });
+        } else {
+            nextstepsBox.classList.add('hidden');
+        }
+
+        // 14. Raw JSON Preview
+        document.getElementById('json-preview').textContent = JSON.stringify(data, null, 2);
+    }
+}

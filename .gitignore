@@ -1,0 +1,26 @@
+# Environments and Secrets
+.env
+*.env
+backend/.env
+
+# Python Virtual Environments & Bytecode
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Storage & Uploads runtime cache
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/storage/embeddings/
+
+# OS and IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

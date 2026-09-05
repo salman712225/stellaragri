@@ -1,0 +1,59 @@
+/* ==========================================================
+   Stellar Agri AI - Responsive Stylesheet
+   ========================================================== */
+
+@media (max-width: 768px) {
+    .app-container {
+        padding: 12px 14px 40px;
+        gap: 20px;
+    }
+
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+    }
+
+    .header-status {
+        align-self: flex-start;
+    }
+
+    .banner-card {
+        padding: 20px;
+    }
+
+    .banner-card h2 {
+        font-size: 1.35rem;
+    }
+
+    .banner-card p {
+        font-size: 0.9rem;
+    }
+
+    .input-section {
+        top: 10px;
+    }
+
+    .input-wrapper {
+        padding: 6px 6px 6px 14px;
+    }
+
+    .send-btn span {
+        display: none;
+    }
+
+    .send-btn {
+        padding: 10px 14px;
+    }
+
+    .results-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+}

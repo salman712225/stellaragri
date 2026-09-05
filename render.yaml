@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: stellar-agri-ai
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SNAPSERVE_API_KEY
+        sync: false
+      - key: SNAPSERVE_BASE_URL
+        value: https://app.snapserve.ai/api
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEATHER_API_KEY
+        value: 59595d305ea74112b9c105207261907
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: stellar_agri
+

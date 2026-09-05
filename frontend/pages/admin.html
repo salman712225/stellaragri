@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Stellar Agri AI - Admin Control Center for MCP Connection, Voice Agents, Call Logs and Error Diagnostics">
+  <title>Admin Dashboard | Stellar Agri AI Voice & MCP Operations</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="/frontend/assets/logo.jpg">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/frontend/css/admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    
+    <!-- Top Navigation Bar -->
+    <header class="admin-navbar">
+      <div class="brand-section">
+        <div class="brand-logo-wrap">
+          <img src="/frontend/assets/logo.jpg" alt="Stellar Logo">
+        </div>
+        <div class="brand-meta">
+          <h1>Stellar Agri AI <span class="badge-admin">MCP Admin Center</span></h1>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div id="mcp-status-pill" class="mcp-pill">
+          <span class="pulse-dot"></span>
+          <span class="status-lbl">Connecting MCP...</span>
+        </div>
+
+        <button id="refresh-all-btn" class="btn btn-outline" title="Refresh Telemetry">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span>Refresh</span>
+        </button>
+
+        <a href="/" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span>Farmer Advisory</span>
+        </a>
+
+        <button id="admin-logout-btn" class="btn btn-outline" style="border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;" title="Sign Out">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="admin-main">
+
+      <!-- KPI Metrics Row -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon">⚡</div>
+          <div class="kpi-info">
+            <h3>MCP Server</h3>
+            <div class="kpi-value" id="ping-latency">-- ms</div>
+            <div class="kpi-sub">@snapserveai/mcp (76 Tools)</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-info">
+            <h3>Prepaid Balance</h3>
+            <div class="kpi-value" id="wallet-inr">₹0.00</div>
+            <div class="kpi-sub" id="wallet-cents">0 paise available</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">📞</div>
+          <div class="kpi-info">
+            <h3>Active Phone DID</h3>
+            <div class="kpi-value" id="active-phone-number">+91...</div>
+            <div class="kpi-sub">Inbound & Outbound PSTN</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <div class="kpi-icon">📊</div>
+            <h3>Total Calls</h3>
+            <div class="kpi-value" id="total-calls-count">--</div>
+            <div class="kpi-sub" id="active-agents-count">-- Active Agents</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">⏱️</div>
+          <div class="kpi-info">
+            <h3>LLM 1st-Token Latency</h3>
+            <div class="kpi-value" id="avg-llm-latency">-- ms</div>
+            <div class="kpi-sub">Sarvam Conversational STT/LLM</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabs Navigation -->
+      <nav class="tabs-header">
+        <button class="tab-btn active" data-tab="tab-agents">
+          <span>🤖 MCP & Voice Agents</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-calls">
+          <span>📞 Live Call Logs & Transcripts</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-claims">
+          <span>🛡️ Crop Insurance Claims Docket</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-enquiries">
+          <span>📋 Farmer Enquiries</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-errors">
+          <span>⚠️ Errors & System Diagnostics</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-dialer">
+          <span>🚀 Outbound Test Dialer</span>
+        </button>
+      </nav>
+
+      <!-- Tab 1: MCP & Voice Agents -->
+      <section id="tab-agents" class="tab-content active">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div>
+              <h2><span>🌾</span> Configured Agricultural Voice Agents</h2>
+              <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
+                Manage Indic speech models (Sarvam / Cartesia), System Prompts, and live telephony routing.
+              </p>
+            </div>
+            <button id="provision-agent-btn" class="btn btn-primary">
+              ✨ Provision Stellar Agri Voice Advisor
+            </button>
+          </div>
+
+          <div id="agents-grid" class="agents-grid">
+            <!-- Dynamic Agent Cards will load here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: Live Call Logs & Transcripts -->
+      <section id="tab-calls" class="tab-content">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div>
+              <h2><span>📑</span> Telephony Call History & Transcripts</h2>
+              <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
+                Real-time stream of all incoming farmer calls and outbound agricultural advisories.
+              </p>
+            </div>
+          </div>
+
+          <!-- Filter & Search Bar -->
+          <div class="table-filter-bar">
+            <div class="search-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="call-search-input" placeholder="Search by phone, summary, or keyword...">
+            </div>
+
+            <div class="filter-group">
+              <select id="status-filter" class="select-filter">
+                <option value="all">All Call Statuses</option>
+                <option value="completed">Completed</option>
+                <option value="ringing">Ringing / In Progress</option>
+                <option value="failed">Failed</option>
+                <option value="no_pickup">No Pickup</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Calls Table -->
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Call ID</th>
+                  <th>Recipient / Caller</th>
+                  <th>Status</th>
+                  <th>Duration</th>
+                  <th>Cost</th>
+                  <th>Timestamp</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="calls-table-body">
+                <!-- Rows injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: Crop Insurance Claims Docket & Plausibility Review -->
+      <section id="tab-claims" class="tab-content">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div>
+              <h2><span>🛡️</span> PMFBY Crop Insurance Claims & Fraud Review Docket</h2>
+              <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
+                Inspect incoming loss claims, meteorological plausibility cross-checks, intimation window compliance, and human escalation queues.
+              </p>
+            </div>
+            <button id="add-claim-manual-btn" class="btn btn-outline" style="border-color: rgba(52, 211, 153, 0.4); color: #34d399;">
+              ➕ Log Claim Intake
+            </button>
+          </div>
+
+          <!-- Claims Filter & Search Bar -->
+          <div class="table-filter-bar">
+            <div class="search-input-wrap">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="claims-search-input" placeholder="Search claims by farmer, phone, crop, damage type, or location...">
+            </div>
+
+            <div class="filter-dropdown-wrap">
+              <label for="claims-status-filter">Review Status:</label>
+              <select id="claims-status-filter">
+                <option value="all">All Claims</option>
+                <option value="pending_surveyor_review">Pending Surveyor Review</option>
+                <option value="verified">Verified / Highly Plausible</option>
+                <option value="flagged_mismatch">Flagged Anomaly / Mismatch</option>
+                <option value="escalated">Escalated to Human Officer</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Claims Table -->
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Claim ID</th>
+                  <th>Farmer Details</th>
+                  <th>Crop & Extent</th>
+                  <th>Damage Event</th>
+                  <th>Loss Date & Location</th>
+                  <th>Weather Plausibility</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="claims-table-body">
+                <!-- Rows injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 4: Farmer Enquiries (MongoDB) -->
+      <section id="tab-enquiries" class="tab-content">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div>
+              <h2><span>📋</span> Farmer Call Enquiries & Web Leads</h2>
+              <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
+                Incoming advisory requests stored in MongoDB Atlas (with local fallback). Review status, redial farmers, or update progress.
+              </p>
+            </div>
+            <div id="db-status-badge" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7; font-weight: 500;">
+              💾 Checking DB...
+            </div>
+          </div>
+
+          <!-- Filter & Search Bar -->
+          <div class="table-filter-bar">
+            <div class="search-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="enquiry-search-input" placeholder="Search by farmer name, phone, crop, or issue...">
+            </div>
+
+            <div class="filter-group">
+              <select id="enquiry-status-filter" class="select-filter">
+                <option value="all">All Enquiries</option>
+                <option value="call_initiated">Call Initiated</option>
+                <option value="completed">Completed</option>
+                <option value="resolved">Resolved</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Enquiries Table -->
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Farmer Details</th>
+                  <th>Crop</th>
+                  <th>Language</th>
+                  <th>Issue / Request</th>
+                  <th>Status</th>
+                  <th>Date & Time</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="enquiries-table-body">
+                <!-- Rows injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 4: Errors & Diagnostics -->
+      <section id="tab-errors" class="tab-content">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div>
+              <h2><span>🔍</span> Real-Time Error Stream & Latency Telemetry</h2>
+              <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
+                Inspect API errors (401 Auth, 402 Wallet, 403 Forbidden, 429 Rate Limit) and STT/TTS latency breakdown.
+              </p>
+            </div>
+          </div>
+
+          <div class="terminal-panel">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <span style="font-size: 0.75rem; color: var(--text-dim);">stellar-agri-mcp-diagnostics.log</span>
+            </div>
+            <div id="terminal-body" class="terminal-body">
+              <!-- Logs injected here -->
+            </div>
+          </div>
+
+          <!-- Error Diagnostics Cheat Sheet -->
+          <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+              <h4 style="font-size: 0.85rem; color: var(--accent-light); margin-bottom: 6px;">🔒 HTTP 401 & 403 Errors</h4>
+              <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+                Ensure <code style="color: var(--accent-light);">SNAPSERVE_API_KEY</code> starts with <code style="color: var(--accent-light);">sk_live_...</code> and is passed with <code style="color: var(--accent-light);">Authorization: Bearer</code> header.
+              </p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+              <h4 style="font-size: 0.85rem; color: #fbbf24; margin-bottom: 6px;">💳 HTTP 402 Insufficient Funds</h4>
+              <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+                Calls deduct ₹5.00/min from prepaid balance. Top up at <a href="https://app.snapserve.ai" target="_blank" style="color: var(--accent-light);">app.snapserve.ai</a> via Razorpay card checkout.
+              </p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+              <h4 style="font-size: 0.85rem; color: #60a5fa; margin-bottom: 6px;">⚡ Turn-Taking Latency</h4>
+              <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+                Sarvam STT <code style="color: var(--accent-light);">saaras:v3-realtime</code> provides millisecond VAD endpointing for rapid Indian language responses.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 4: Outbound Test Dialer -->
+      <section id="tab-dialer" class="tab-content">
+        <div class="glass-panel" style="max-width: 700px; margin: 0 auto;">
+          <div class="panel-header">
+            <div>
+              <h2><span>🚀</span> Dispatch Test Advisory Outbound Call</h2>
+              <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
+                Test your live voice agent by placing an instant PSTN call to your mobile number with custom farming variables.
+              </p>
+            </div>
+          </div>
+
+          <form id="outbound-call-form">
+            <div class="form-group">
+              <label for="outbound-agent-select">Select Voice Agent</label>
+              <select id="outbound-agent-select" class="form-control" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="outbound-phone">Destination Phone Number (E.164 format)</label>
+              <input type="text" id="outbound-phone" class="form-control" placeholder="+919876543210" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label for="outbound-farmer-name">Farmer Name</label>
+                <input type="text" id="outbound-farmer-name" class="form-control" placeholder="Ramesh Kumar" value="Ramesh Kumar">
+              </div>
+              <div class="form-group">
+                <label for="outbound-crop">Crop Type</label>
+                <input type="text" id="outbound-crop" class="form-control" placeholder="Paddy / Cotton / Wheat" value="Paddy">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="outbound-language">Spoken Language</label>
+              <select id="outbound-language" class="form-control">
+                <option value="hi-IN" selected>Hindi (हिंदी)</option>
+                <option value="en-IN">English (Indian)</option>
+                <option value="ta-IN">Tamil (தமிழ்)</option>
+                <option value="te-IN">Telugu (తెలుగు)</option>
+                <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+                <option value="mr-IN">Marathi (मराठी)</option>
+                <option value="bn-IN">Bengali (বাংলা)</option>
+                <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+                <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
+                <option value="ml-IN">Malayalam (മലയാളം)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="outbound-alert-msg">Advisory Alert Message (Optional)</label>
+              <textarea id="outbound-alert-msg" class="form-control" rows="3" placeholder="e.g. Heavy rainfall predicted in Thanjavur for the next 48 hours. Postpone urea top dressing."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; justify-content: center; font-size: 1rem;">
+              📞 Trigger Outbound Phone Call
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Side Drawer: Call Transcript & Audio Recording Viewer -->
+    <div id="transcript-drawer" class="drawer-overlay">
+      <div class="drawer-panel">
+        <div class="drawer-header">
+          <div>
+            <h3 id="drawer-call-id" style="font-size: 1.1rem; color: #fff;">Call Details</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-light);">Verified SnapServe Session</span>
+          </div>
+          <button id="drawer-close-btn" class="drawer-close">&times;</button>
+        </div>
+
+        <div class="drawer-body">
+          <!-- Audio Player -->
+          <div id="drawer-audio-container" class="audio-player-card" style="display: none;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-light); margin-bottom: 4px;">
+              🎙️ Call Audio Recording
+            </div>
+            <audio id="drawer-audio" controls preload="none"></audio>
+          </div>
+
+          <!-- AI Summary -->
+          <div style="background: rgba(255, 255, 255, 0.03); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <h4 style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">
+              💡 AI Conversation Summary
+            </h4>
+            <p id="drawer-summary" style="font-size: 0.88rem; color: var(--text-main); line-height: 1.45;">
+              Loading summary...
+            </p>
+          </div>
+
+          <!-- Evaluation -->
+          <div style="background: rgba(255, 255, 255, 0.03); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <h4 style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">
+              🎯 Outcome Evaluation
+            </h4>
+            <p id="drawer-evaluation" style="font-size: 0.85rem; color: var(--accent-light); font-weight: 500;">
+              Evaluation pending...
+            </p>
+          </div>
+
+          <!-- Conversation Thread -->
+          <div>
+            <h4 style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">
+              💬 Full Conversation Transcript
+            </h4>
+            <div id="drawer-transcript-thread" class="transcript-thread">
+              <!-- Chat bubbles injected here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Hub -->
+    <div id="toast-container" class="toast-container"></div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="/frontend/js/admin.js"></script>
+</body>
+</html>
